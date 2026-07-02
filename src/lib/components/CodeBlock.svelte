@@ -31,15 +31,15 @@
 			<div class="flex items-center gap-2">
 				<span class="rounded border border-zinc-200 bg-white px-1.5 py-0.5 font-mono text-[11px] text-zinc-500">{lang}</span>
 				{#if filename}
-					<span class="text-xs text-zinc-400">{filename}</span>
+					<span class="text-xs text-zinc-600">{filename}</span>
 				{/if}
 				{#if route}
-					<span class="text-xs text-zinc-400">· {route}</span>
+					<span class="text-xs text-zinc-600">· {route}</span>
 				{/if}
 			</div>
 			<button
 				onclick={copyCode}
-				class="flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
+				class="flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-700"
 				aria-label="Copy code"
 			>
 				{#if copied}

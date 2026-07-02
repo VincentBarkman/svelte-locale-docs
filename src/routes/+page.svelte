@@ -158,7 +158,7 @@ formatRelativeTime(2, 'hour')     // → "in 2 hours"`;
 		</div>
 		<h1 class="mb-3 text-4xl font-bold tracking-tight text-zinc-900">svelte-locale</h1>
 		<p class="mb-1 text-lg text-zinc-500">A stupid-simple, SvelteKit-native i18n library for Svelte 5.</p>
-		<p class="mb-8 text-sm text-zinc-400">Zero flicker · Server-first · Fully type-safe</p>
+		<p class="mb-8 text-sm text-zinc-600">Zero flicker · Server-first · Fully type-safe</p>
 		<div class="flex gap-3">
 			<Button href="https://www.npmjs.com/package/svelte-locale" target="_blank" rel="noopener noreferrer" size="lg">
 				npm package
@@ -188,7 +188,7 @@ formatRelativeTime(2, 'hour')     // → "in 2 hours"`;
 			<CodeBlock code={tExampleCode} lang="ts" />
 			<Card>
 				<CardContent class="pt-4">
-					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-400">Live demo</p>
+					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">Live demo</p>
 					<ShowcaseT />
 				</CardContent>
 			</Card>
@@ -204,7 +204,7 @@ formatRelativeTime(2, 'hour')     // → "in 2 hours"`;
 			<CodeBlock code={pluralExampleCode} lang="ts" />
 			<Card>
 				<CardContent class="pt-4">
-					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-400">Live demo</p>
+					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">Live demo</p>
 					<ShowcasePlural />
 				</CardContent>
 			</Card>
@@ -229,7 +229,7 @@ formatRelativeTime(2, 'hour')     // → "in 2 hours"`;
 			<CodeBlock code={formatExampleCode} lang="ts" />
 			<Card>
 				<CardContent class="pt-4">
-					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-400">Live demo</p>
+					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">Live demo</p>
 					<ShowcaseFormat />
 				</CardContent>
 			</Card>
@@ -244,31 +244,31 @@ formatRelativeTime(2, 'hour')     // → "in 2 hours"`;
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">1. Register the Vite plugin — <Badge variant="outline">vite.config.ts</Badge></p>
-				<p class="mb-2 text-xs text-zinc-400">Must be before <Badge variant="outline">sveltekit()</Badge> so the transform runs first.</p>
+				<p class="mb-2 text-xs text-zinc-600">Must be before <Badge variant="outline">sveltekit()</Badge> so the transform runs first.</p>
 				<CodeBlock code={viteCode} lang="ts" filename="vite.config.ts" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">2. Add lang/dir placeholders — <Badge variant="outline">src/app.html</Badge></p>
-				<p class="mb-2 text-xs text-zinc-400">SvelteKit fills these in server-side on each request.</p>
+				<p class="mb-2 text-xs text-zinc-600">SvelteKit fills these in server-side on each request.</p>
 				<CodeBlock code={appHtmlCode} lang="html" filename="src/app.html" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">3. Augment App.Locals — <Badge variant="outline">src/app.d.ts</Badge></p>
-				<p class="mb-2 text-xs text-zinc-400">Gives you full type-safety when accessing <Badge variant="outline">locals.locale</Badge>.</p>
+				<p class="mb-2 text-xs text-zinc-600">Gives you full type-safety when accessing <Badge variant="outline">locals.locale</Badge>.</p>
 				<CodeBlock code={appDtsCode} lang="ts" filename="src/app.d.ts" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">4. Register the handle hook — <Badge variant="outline">src/hooks.server.ts</Badge></p>
-				<p class="mb-2 text-xs text-zinc-400">Detects locale from URL → cookie → Accept-Language → default, then sets <Badge variant="outline">html lang/dir</Badge>.</p>
+				<p class="mb-2 text-xs text-zinc-600">Detects locale from URL → cookie → Accept-Language → default, then sets <Badge variant="outline">html lang/dir</Badge>.</p>
 				<CodeBlock code={hooksCode} lang="ts" filename="src/hooks.server.ts" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">5. Pass locale to layout — <Badge variant="outline">+layout.server.ts</Badge> + <Badge variant="outline">+layout.svelte</Badge></p>
-				<p class="mb-2 text-xs text-zinc-400">The server passes locale down; the client initializes its reactive state from it.</p>
+				<p class="mb-2 text-xs text-zinc-600">The server passes locale down; the client initializes its reactive state from it.</p>
 				<div class="space-y-4">
 					<CodeBlock code={layoutServerCode} lang="ts" filename="+layout.server.ts" route="/+layout.server.ts" />
 					<CodeBlock code={layoutSvelteCode} lang="svelte" filename="+layout.svelte" route="/+layout.svelte" />
@@ -356,14 +356,14 @@ formatRelativeTime(2, 'hour')     // → "in 2 hours"`;
 
 	</main>
 
-	<footer class="border-t border-zinc-100 py-8 text-center text-sm text-zinc-400">
+	<footer class="border-t border-zinc-100 py-8 text-center text-sm text-zinc-600">
 		<p class="flex items-center justify-center gap-1 flex-wrap">
 			Built with
-			<Button variant="link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-400">Svelte</Button>
+			<Button variant="link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">Svelte</Button>
 			·
-			<Button variant="link" href="https://www.npmjs.com/package/svelte-locale" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-400">npm</Button>
+			<Button variant="link" href="https://www.npmjs.com/package/svelte-locale" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">npm</Button>
 			· by
-			<Button variant="link" href="https://vincentbarkman.com" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-400">Vincent A. Barkman</Button>
+			<Button variant="link" href="https://vincentbarkman.com" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">Vincent A. Barkman</Button>
 		</p>
 	</footer>
 </div>

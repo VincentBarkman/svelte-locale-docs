@@ -57,7 +57,7 @@
 		{/each}
 		<div class="ml-auto flex items-center gap-3">
 			<Label class="text-muted-foreground text-sm">count = <strong class="text-foreground">{count}</strong></Label>
-			<Slider type="multiple" bind:value={sliderValue} min={0} max={20} step={1} class="w-28" aria-label="Count" />
+			<Slider type="multiple" bind:value={sliderValue} min={0} max={20} step={1} class="w-28" thumbLabel="Count" />
 		</div>
 	</div>
 
@@ -66,7 +66,7 @@
 			<TableBody>
 				{#each keys as key (key)}
 					<TableRow>
-						<TableCell class="text-xs text-zinc-400 font-mono py-2">plural('{key}', {count})</TableCell>
+						<TableCell class="text-xs text-zinc-600 font-mono py-2">plural('{key}', {count})</TableCell>
 						<TableCell class="text-right font-medium text-zinc-800 py-2" dir={RTL.has(locale) ? 'rtl' : 'ltr'}>{plural(key, count)}</TableCell>
 					</TableRow>
 				{/each}

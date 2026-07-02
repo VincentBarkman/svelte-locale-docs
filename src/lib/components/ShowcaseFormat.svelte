@@ -59,7 +59,7 @@
 			<TableBody>
 				{#each rows as row (row.fn)}
 					<TableRow>
-						<TableCell class="text-xs text-zinc-400 font-mono py-2">{row.fn}</TableCell>
+						<TableCell class="text-xs text-zinc-600 font-mono py-2">{row.fn}</TableCell>
 						<TableCell class="text-right font-medium tabular-nums text-zinc-800 py-2" dir={RTL.has(locale) ? 'rtl' : 'ltr'}>{row.result}</TableCell>
 					</TableRow>
 				{/each}

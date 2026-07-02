@@ -68,7 +68,7 @@
 			<TableBody>
 				{#each keys as key (key)}
 					<TableRow>
-						<TableCell class="text-xs text-zinc-400 font-mono py-2">
+						<TableCell class="text-xs text-zinc-600 font-mono py-2">
 							t('{key}'{key.includes('{') ? `, { name }` : ''})
 						</TableCell>
 						<TableCell class="text-right font-medium text-zinc-800 py-2" dir={RTL.has(locale) ? 'rtl' : 'ltr'}>
