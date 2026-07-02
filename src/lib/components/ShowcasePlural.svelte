@@ -57,7 +57,7 @@
 		{/each}
 		<div class="ml-auto flex items-center gap-3">
 			<Label class="text-muted-foreground text-sm">count = <strong class="text-foreground">{count}</strong></Label>
-			<Slider type="multiple" bind:value={sliderValue} min={0} max={20} step={1} class="w-28" />
+			<Slider type="multiple" bind:value={sliderValue} min={0} max={20} step={1} class="w-28" aria-label="Count" />
 		</div>
 	</div>
 
