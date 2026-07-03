@@ -242,14 +242,16 @@ import '$lib/i18n/functions';`;
 		{ feature: 'Server-first / zero flicker', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '△' },
 		{ feature: 'Svelte 5 runes-friendly', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '△' },
 		{ feature: 'SvelteKit-native scaffolding', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '✗' },
-		{ feature: 'Plural rules (Intl)', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✓', svelte_i18n: '✓' },
+		{ feature: 'Plural rules via Intl', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✓', svelte_i18n: '✓' },
 		{ feature: 'Logic-based fn() translations', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '△', svelte_i18n: '✗' },
-		{ feature: 'Rich component <I18n>', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'Rich component <I18n>', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'Rich text / component interpolation', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '△' },
 		{ feature: 'Intl formatter helpers', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✓', svelte_i18n: '✗' },
 		{ feature: 'RTL via <html dir>', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: '<LocaleSwitcher> component', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: '<HreflangLinks> SEO component', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: 'URL prefix routing', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'Type-safe keys and params', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✓', svelte_i18n: '✗' },
 	];
 </script>
 
@@ -305,7 +307,7 @@ import '$lib/i18n/functions';`;
 		<section class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">How it compares</h2>
-				<p class="text-sm text-zinc-500">svelte-locale vs the most popular SvelteKit i18n options. <span class="text-zinc-400">△ = partial / workaround required</span></p>
+				<p class="text-sm text-zinc-500">svelte-locale vs the most popular SvelteKit i18n options.</p>
 			</div>
 			<div class="overflow-hidden rounded-lg border border-zinc-200">
 				<Table>
@@ -330,6 +332,11 @@ import '$lib/i18n/functions';`;
 						{/each}
 					</TableBody>
 				</Table>
+			</div>
+			<div class="flex gap-4 text-xs text-zinc-500">
+				<span class="flex items-center gap-1"><span class="text-emerald-600 font-semibold">✓</span> Built in / first-class</span>
+				<span class="flex items-center gap-1"><span class="text-amber-500 font-semibold">△</span> Partial / manual / different API</span>
+				<span class="flex items-center gap-1"><span class="text-red-500 font-semibold">✗</span> Not built in</span>
 			</div>
 		</section>
 
