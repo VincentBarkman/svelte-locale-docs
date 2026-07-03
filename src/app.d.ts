@@ -9,8 +9,11 @@ declare global {
 			cf?: IncomingRequestCfProperties;
 		}
 
+		interface Locals {
+			locale: import('svelte-locale').Locale;
+		}
+
 		// interface Error {}
-		// interface Locals {}
 		// interface PageData {}
 		// interface PageState {}
 	}

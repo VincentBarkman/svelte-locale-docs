@@ -7,7 +7,17 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '$lib/components/ui/table';
+	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import { Globe } from '@lucide/svelte';
+	import { setLocale } from 'svelte-locale';
+	import { t } from 'svelte-locale';
+	import { getLocale } from 'svelte-locale';
+
+	let locale = $state(getLocale());
+
+	$effect(() => {
+		setLocale(locale);
+	});
 
 	const quickInstallCode = `npx svelte-locale init`;
 
@@ -260,21 +270,32 @@ import '$lib/i18n/functions';`;
 	<meta name="description" content="A stupid-simple, SvelteKit-native i18n library for Svelte 5." />
 </svelte:head>
 
-<div class="min-h-screen bg-white font-sans text-zinc-900">
+<div class="min-h-screen bg-white font-sans text-zinc-900 relative">
+	<div class="absolute top-6 right-6">
+		<Select type="single" value={locale} onValueChange={(val) => locale = val as import('svelte-locale').Locale}>
+			<SelectTrigger class="w-[140px]">
+				{locale === 'en' ? 'English' : locale === 'sv' ? 'Svenska' : 'Language'}
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value="en">English</SelectItem>
+				<SelectItem value="sv">Svenska</SelectItem>
+			</SelectContent>
+		</Select>
+	</div>
 
 	<header class="mx-auto flex max-w-2xl flex-col items-center px-6 pb-10 pt-20 text-center">
 		<div class="mb-5 flex size-16 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm text-zinc-700">
 			<Globe size={28} />
 		</div>
 		<h1 class="mb-3 text-4xl font-bold tracking-tight text-zinc-900">svelte-locale</h1>
-		<p class="mb-1 text-lg text-zinc-500">A SvelteKit-native i18n library for Svelte 5. Zero dependencies.</p>
-		<p class="mb-8 text-sm text-zinc-600">Zero flicker · Server-first · Fully type-safe</p>
+		<p class="mb-1 text-lg text-zinc-500">{t('hero.tagline')}</p>
+		<p class="mb-8 text-sm text-zinc-600">{t('hero.features')}</p>
 		<div class="flex gap-3">
 			<Button href="https://www.npmjs.com/package/svelte-locale" target="_blank" rel="noopener noreferrer" size="lg">
-				npm package
+				{t('hero.npm')}
 			</Button>
 			<Button href="https://github.com/VincentBarkman/svelte-locale" target="_blank" rel="noopener noreferrer" variant="outline" size="lg">
-				GitHub
+				{t('hero.github')}
 			</Button>
 		</div>
 	</header>
@@ -283,31 +304,31 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">Installation</h2>
-				<p class="text-sm text-zinc-500">Run <Badge variant="outline">init</Badge> — it installs the package and scaffolds all required files. Existing files are never overwritten.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('install.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('install.desc')}</p>
 			</div>
 			<CodeBlock code={quickInstallCode} lang="bash" />
 			<div class="rounded-xl border border-zinc-200 bg-zinc-50 px-5 py-4 text-sm text-zinc-700">
-				<p class="mb-2 font-medium">The <code class="rounded bg-zinc-200 px-1 py-0.5 text-xs">init</code> command writes:</p>
+				<p class="mb-2 font-medium">{t('install.init_writes')}</p>
 				<ul class="space-y-1 text-xs text-zinc-600">
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/app.html</code> — patches <code class="rounded bg-zinc-200 px-1 py-0.5">%lang%</code> and <code class="rounded bg-zinc-200 px-1 py-0.5">%dir%</code> onto <code class="rounded bg-zinc-200 px-1 py-0.5">&lt;html&gt;</code></li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/app.d.ts</code> — types <code class="rounded bg-zinc-200 px-1 py-0.5">App.Locals.locale</code></li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/hooks.server.ts</code> — wires up <code class="rounded bg-zinc-200 px-1 py-0.5">handleI18n()</code></li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.server.ts</code> — passes locale to the client</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.ts</code> — imports translation files client-side</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.svelte</code> — calls <code class="rounded bg-zinc-200 px-1 py-0.5">initLocale</code> reactively</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/messages.ts</code> — starter message file</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/plurals.ts</code> — starter plural file</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/functions.ts</code> — starter function file</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">vite.config.ts</code> — patches in the <code class="rounded bg-zinc-200 px-1 py-0.5">richI18n()</code> Vite plugin</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/app.html</code> — {t('install.app_html')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/app.d.ts</code> — {t('install.app_dts')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/hooks.server.ts</code> — {t('install.hooks')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.server.ts</code> — {t('install.layout_server')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.ts</code> — {t('install.layout_ts')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.svelte</code> — {t('install.layout_svelte')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/messages.ts</code> — {t('install.messages')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/plurals.ts</code> — {t('install.plurals')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/functions.ts</code> — {t('install.functions')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">vite.config.ts</code> — {t('install.vite')}</li>
 				</ul>
 			</div>
 		</section>
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">How it compares</h2>
-				<p class="text-sm text-zinc-500">svelte-locale vs the most popular SvelteKit i18n options.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('compare.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('compare.desc')}</p>
 			</div>
 			<div class="overflow-hidden rounded-lg border border-zinc-200">
 				<Table>
@@ -334,22 +355,22 @@ import '$lib/i18n/functions';`;
 				</Table>
 			</div>
 			<div class="flex gap-4 text-xs text-zinc-500">
-				<span class="flex items-center gap-1"><span class="text-emerald-600 font-semibold">✓</span> Built in / first-class</span>
-				<span class="flex items-center gap-1"><span class="text-amber-500 font-semibold">△</span> Partial / manual / different API</span>
-				<span class="flex items-center gap-1"><span class="text-red-500 font-semibold">✗</span> Not built in</span>
+				<span class="flex items-center gap-1"><span class="text-emerald-600 font-semibold">✓</span> {t('compare.legend.built')}</span>
+				<span class="flex items-center gap-1"><span class="text-amber-500 font-semibold">△</span> {t('compare.legend.partial')}</span>
+				<span class="flex items-center gap-1"><span class="text-red-500 font-semibold">✗</span> {t('compare.legend.not')}</span>
 			</div>
 		</section>
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">t() — String translations</h2>
-				<p class="text-sm text-zinc-500">Define messages per locale, then call <Badge variant="outline">t(key)</Badge> anywhere. Use <Badge variant="outline">{'{name}'}</Badge>-style placeholders for interpolation. Falls back to <Badge variant="outline">fallbackLocale</Badge> if a key is missing.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('t.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('t.desc')}</p>
 			</div>
 			<CodeBlock code={messagesCode} lang="ts" filename="src/lib/i18n/messages.ts" />
 			<CodeBlock code={tExampleCode} lang="ts" />
 			<Card>
 				<CardContent class="pt-4">
-					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">Live demo</p>
+					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">{t('t.demo')}</p>
 					<ShowcaseT />
 				</CardContent>
 			</Card>
@@ -357,14 +378,14 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">plural() — Plural rules</h2>
-				<p class="text-sm text-zinc-500">Define plural forms using CLDR category keys (<Badge variant="outline">one</Badge>, <Badge variant="outline">other</Badge>, <Badge variant="outline">few</Badge>, …). <Badge variant="outline">Intl.PluralRules</Badge> picks the right form automatically. <Badge variant="outline">{'{count}'}</Badge> is always available.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('plural.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('plural.desc')}</p>
 			</div>
 			<CodeBlock code={pluralsCode} lang="ts" filename="src/lib/i18n/plurals.ts" />
 			<CodeBlock code={pluralExampleCode} lang="ts" />
 			<Card>
 				<CardContent class="pt-4">
-					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">Live demo</p>
+					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">{t('t.demo')}</p>
 					<ShowcasePlural />
 				</CardContent>
 			</Card>
@@ -372,8 +393,8 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">fn() — Logic translations</h2>
-				<p class="text-sm text-zinc-500">When a string template isn't enough — conditionals, formatting, composed strings — define a typed function per locale. Use <Badge variant="outline">createFn&lt;M&gt;()</Badge> to get full type inference on keys and arguments.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('fn.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('fn.desc')}</p>
 			</div>
 			<CodeBlock code={functionsCode} lang="ts" filename="src/lib/i18n/functions.ts" />
 			<CodeBlock code={fnExampleCode} lang="ts" />
@@ -381,13 +402,13 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">Intl formatters</h2>
-				<p class="text-sm text-zinc-500">All formatting uses native <Badge variant="outline">Intl</Badge> APIs keyed to the active locale. No external libraries. Formatters are cached per locale+options combination.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('format.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('format.desc')}</p>
 			</div>
 			<CodeBlock code={formatExampleCode} lang="ts" />
 			<Card>
 				<CardContent class="pt-4">
-					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">Live demo</p>
+					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">{t('t.demo')}</p>
 					<ShowcaseFormat />
 				</CardContent>
 			</Card>
@@ -395,19 +416,19 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">&lt;I18n&gt; — Rich component translations</h2>
-				<p class="text-sm text-zinc-500">Wrap locale-specific markup in <Badge variant="outline">&lt;I18n&gt;</Badge>. The Vite plugin transforms each child into a Svelte snippet at compile time — only the active locale's HTML is ever sent to the browser. No hidden DOM, no client-side switching.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('i18n.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('i18n.desc')}</p>
 			</div>
 			<CodeBlock code={i18nExampleCode} lang="svelte" />
 			<div class="rounded-xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm text-amber-800">
-				Every direct child must have a <Badge variant="outline" class="border-amber-200 bg-amber-100 text-amber-800">lang</Badge> attribute matching a configured locale. Any Svelte content is allowed inside — components, <code class="rounded bg-amber-100 px-1 py-0.5 text-xs">{'{#if}'}</code>, <code class="rounded bg-amber-100 px-1 py-0.5 text-xs">{'{#each}'}</code>, etc.
+				{t('i18n.note')}
 			</div>
 		</section>
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">Components</h2>
-				<p class="text-sm text-zinc-500"><Badge variant="outline">&lt;LocaleSwitcher&gt;</Badge>, <Badge variant="outline">&lt;LocaleLink&gt;</Badge>, and <Badge variant="outline">&lt;HreflangLinks&gt;</Badge> are all imported from <Badge variant="outline">svelte-locale/svelte</Badge>.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('components.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('components.desc')}</p>
 			</div>
 			<CodeBlock code={localeSwitcherCode} lang="svelte" />
 			<CodeBlock code={localeLinksCode} lang="svelte" />
@@ -415,42 +436,42 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-6">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">Manual setup</h2>
-				<p class="text-sm text-zinc-500">If you prefer to wire things up yourself, first install the package, then create these files:</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('manual.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('manual.desc')}</p>
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm font-medium text-zinc-700">0. Install the package</p>
+				<p class="mb-1 text-sm font-medium text-zinc-700">0. {t('manual.step0')}</p>
 				<CodeBlock code="npm install svelte-locale" lang="bash" />
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm font-medium text-zinc-700">1. Register the Vite plugin — <Badge variant="outline">vite.config.ts</Badge></p>
-				<p class="mb-2 text-xs text-zinc-600">Must be before <Badge variant="outline">sveltekit()</Badge> so the transform runs first.</p>
+				<p class="mb-1 text-sm font-medium text-zinc-700">1. {t('manual.step1')}</p>
+				<p class="mb-2 text-xs text-zinc-600">{t('manual.step1_desc')}</p>
 				<CodeBlock code={viteCode} lang="ts" filename="vite.config.ts" />
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm font-medium text-zinc-700">2. Add lang/dir placeholders — <Badge variant="outline">src/app.html</Badge></p>
-				<p class="mb-2 text-xs text-zinc-600">SvelteKit fills these in server-side on each request.</p>
+				<p class="mb-1 text-sm font-medium text-zinc-700">2. {t('manual.step2')}</p>
+				<p class="mb-2 text-xs text-zinc-600">{t('manual.step2_desc')}</p>
 				<CodeBlock code={appHtmlCode} lang="html" filename="src/app.html" />
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm font-medium text-zinc-700">3. Augment App.Locals — <Badge variant="outline">src/app.d.ts</Badge></p>
-				<p class="mb-2 text-xs text-zinc-600">Gives you full type-safety when accessing <Badge variant="outline">locals.locale</Badge>.</p>
+				<p class="mb-1 text-sm font-medium text-zinc-700">3. {t('manual.step3')}</p>
+				<p class="mb-2 text-xs text-zinc-600">{t('manual.step3_desc')}</p>
 				<CodeBlock code={appDtsCode} lang="ts" filename="src/app.d.ts" />
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm font-medium text-zinc-700">4. Register the handle hook — <Badge variant="outline">src/hooks.server.ts</Badge></p>
-				<p class="mb-2 text-xs text-zinc-600">Detects locale from URL → cookie → Accept-Language → default, then sets <Badge variant="outline">html lang/dir</Badge>.</p>
+				<p class="mb-1 text-sm font-medium text-zinc-700">4. {t('manual.step4')}</p>
+				<p class="mb-2 text-xs text-zinc-600">{t('manual.step4_desc')}</p>
 				<CodeBlock code={hooksCode} lang="ts" filename="src/hooks.server.ts" />
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm font-medium text-zinc-700">5. Pass locale to layout — <Badge variant="outline">+layout.server.ts</Badge> + <Badge variant="outline">+layout.svelte</Badge></p>
-				<p class="mb-2 text-xs text-zinc-600">The server passes locale down; the client initialises its reactive state from it.</p>
+				<p class="mb-1 text-sm font-medium text-zinc-700">5. {t('manual.step5')}</p>
+				<p class="mb-2 text-xs text-zinc-600">{t('manual.step5_desc')}</p>
 				<div class="space-y-4">
 					<CodeBlock code={layoutServerCode} lang="ts" filename="+layout.server.ts" route="src/routes/+layout.server.ts" />
 					<CodeBlock code={layoutTsCode} lang="ts" filename="+layout.ts" route="src/routes/+layout.ts" />
@@ -461,8 +482,8 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">Configuration</h2>
-				<p class="text-sm text-zinc-500">The library ships with defaults baked in. Override by passing config to <Badge variant="outline">richI18n()</Badge> and <Badge variant="outline">handleI18n()</Badge>, or create your own config file to share across both.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('config.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('config.desc')}</p>
 			</div>
 			<CodeBlock code={configCode} lang="ts" filename="src/lib/i18n/config.ts" />
 			<div class="overflow-hidden rounded-lg border border-zinc-200">
@@ -490,8 +511,8 @@ import '$lib/i18n/functions';`;
 
 		<section class="space-y-4">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">Routing strategies</h2>
-				<p class="text-sm text-zinc-500">Set <Badge variant="outline">routing.strategy</Badge> in your config. The handle hook handles redirects automatically.</p>
+				<h2 class="mb-1 text-xl font-semibold">{t('routing.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('routing.desc')}</p>
 			</div>
 			<div class="overflow-hidden rounded-lg border border-zinc-200">
 				<Table>
@@ -518,7 +539,7 @@ import '$lib/i18n/functions';`;
 		</section>
 
 		<section>
-			<h2 class="mb-6 text-xl font-semibold">API Reference</h2>
+			<h2 class="mb-6 text-xl font-semibold">{t('api.title')}</h2>
 			<div class="space-y-8">
 				{#each [
 					{ label: 'svelte-locale', badge: 'core', items: coreApi },
@@ -552,11 +573,11 @@ import '$lib/i18n/functions';`;
 
 	<footer class="border-t border-zinc-100 py-8 text-center text-sm text-zinc-600">
 		<p class="flex items-center justify-center gap-1 flex-wrap">
-			Built with
+			{t('footer.built')}
 			<Button variant="link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">Svelte</Button>
 			·
 			<Button variant="link" href="https://www.npmjs.com/package/svelte-locale" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">npm</Button>
-			· by
+			· {t('footer.by')}
 			<Button variant="link" href="https://vincentbarkman.com" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">Vincent A. Barkman</Button>
 		</p>
 	</footer>
