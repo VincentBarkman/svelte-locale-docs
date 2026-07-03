@@ -100,21 +100,74 @@
 			id: 'api',
 			label: t('toc.api'),
 			content: `API reference t() plural() fn() setLocale() getLocale() defineMessages() definePlurals()`
-		}
+		},
+		// API functions
+		{ id: 'api-t', label: 't()', content: 't() message translation function' },
+		{ id: 'api-plural', label: 'plural()', content: 'plural() pluralization function' },
+		{ id: 'api-fn', label: 'fn()', content: 'fn() custom function handler' },
+		{ id: 'api-setlocale', label: 'setLocale()', content: 'setLocale() change current locale' },
+		{ id: 'api-getlocale', label: 'getLocale()', content: 'getLocale() get current locale' },
+		{ id: 'api-definemessages', label: 'defineMessages()', content: 'defineMessages() register message translations' },
+		{ id: 'api-defineplurals', label: 'definePlurals()', content: 'definePlurals() register plural rules' },
+		{ id: 'api-definefunctions', label: 'defineFunctions()', content: 'defineFunctions() register custom functions' },
+		{ id: 'api-createfn', label: 'createFn()', content: 'createFn() create typed function handler' },
+		{ id: 'api-formatdateiso', label: 'formatDateISO()', content: 'formatDateISO() ISO 8601 date formatting' },
+		{ id: 'api-formatdatetimeiso', label: 'formatDateTimeISO()', content: 'formatDateTimeISO() ISO 8601 datetime formatting' },
+		{ id: 'api-definelocale', label: 'defineLocale()', content: 'defineLocale() register custom locale' },
+		{ id: 'api-getlocalename', label: 'getLocaleName()', content: 'getLocaleName() get locale display name' },
+		{ id: 'api-getlocaledir', label: 'getLocaleDir()', content: 'getLocaleDir() get text direction' },
+		{ id: 'api-getlocaleregistry', label: 'getLocaleRegistry()', content: 'getLocaleRegistry() get locale registry' },
+		{ id: 'api-formatnumber', label: 'formatNumber()', content: 'formatNumber() number formatting' },
+		{ id: 'api-formatcurrency', label: 'formatCurrency()', content: 'formatCurrency() currency formatting' },
+		{ id: 'api-formatdate', label: 'formatDate()', content: 'formatDate() date formatting' },
+		{ id: 'api-formatrelativetime', label: 'formatRelativeTime()', content: 'formatRelativeTime() relative time formatting' },
+		{ id: 'api-withlocale', label: 'withLocale()', content: 'withLocale() prepend locale prefix' },
+		{ id: 'api-switchlocaleinpath', label: 'switchLocaleInPath()', content: 'switchLocaleInPath() swap locale in path' },
+		{ id: 'api-getlocalefrompath', label: 'getLocaleFromPath()', content: 'getLocaleFromPath() extract locale from path' },
+		{ id: 'api-striplocaleprefix', label: 'stripLocalePrefix()', content: 'stripLocalePrefix() remove locale prefix' },
+		{ id: 'api-handlei18n', label: 'handleI18n()', content: 'handleI18n() SvelteKit handle hook' },
+		{ id: 'api-detectlocale', label: 'detectLocale()', content: 'detectLocale() locale detection logic' },
+		{ id: 'api-i18n', label: '<I18n>', content: '<I18n> rich text component' },
+		{ id: 'api-localelink', label: '<LocaleLink>', content: '<LocaleLink> locale-aware anchor' },
+		{ id: 'api-localeswitcher', label: '<LocaleSwitcher>', content: '<LocaleSwitcher> locale switcher component' },
+		{ id: 'api-hreflanglinks', label: '<HreflangLinks>', content: '<HreflangLinks> SEO hreflang tags' },
+		{ id: 'api-richi18n', label: 'richI18n()', content: 'richI18n() Vite plugin' }
 	];
 
 	function navigateToSection(id: string) {
-		const element = document.getElementById(id);
-		if (element) {
-			element.scrollIntoView({ behavior: 'smooth' });
-			highlightedSection = id;
-			searchOpen = false;
-			searchValue = '';
-			// Remove highlight after 2 seconds
-			setTimeout(() => {
-				highlightedSection = null;
-			}, 2000);
+		// Handle API function IDs - map to API section and specific row
+		if (id.startsWith('api-')) {
+			const apiSection = document.getElementById('api');
+			if (apiSection) {
+				apiSection.scrollIntoView({ behavior: 'smooth' });
+				// Try to find the specific row (row IDs have trailing dash from parentheses)
+				const rowId = id.replace('api-', '') + '-';
+				const row = document.getElementById(rowId);
+				if (row) {
+					setTimeout(() => {
+						row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						// Highlight the row
+						row.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+						setTimeout(() => {
+							row.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2');
+						}, 2000);
+					}, 300);
+				}
+				highlightedSection = 'api';
+			}
+		} else {
+			const element = document.getElementById(id);
+			if (element) {
+				element.scrollIntoView({ behavior: 'smooth' });
+				highlightedSection = id;
+			}
 		}
+		searchOpen = false;
+		searchValue = '';
+		// Remove highlight after 2 seconds
+		setTimeout(() => {
+			highlightedSection = null;
+		}, 2000);
 	}
 
 	function updateActiveSection() {
@@ -1024,7 +1077,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 							<Table>
 								<TableBody>
 									{#each group.items as item (item.name)}
-										<TableRow>
+										<TableRow id={item.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}>
 											<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">{item.name}</TableCell>
 											<TableCell class="text-sm text-zinc-600">{item.desc}</TableCell>
 										</TableRow>
