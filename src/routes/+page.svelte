@@ -63,6 +63,82 @@ definePlurals({
 <p>{plural('tickets.count', 1)}</p>  <!-- → '1 ticket' -->
 <p>{plural('tickets.count', 5)}</p>  <!-- → '5 tickets' -->`;
 
+	const richTextCode = `// svelte-locale
+<I18n key="home.hero">
+  <div lang="en">
+    <h1>Support made simple</h1>
+  </div>
+  <div lang="sv">
+    <h1>Support gjort enkelt</h1>
+  </div>
+</I18n>
+
+// paraglide
+{@html m.termsAccept()}
+
+// typesafe-i18n
+{@html $LL.TERMS_ACCEPT()}
+
+// svelte-i18n
+{@html $t('terms.accept')}`;
+
+	const inlineI18nCode = `// svelte-locale
+<I18n key="home.hero">
+  <div lang="en">
+    <h1>{t('hero.title')}</h1>
+    <p>{t('hero.subtitle')}</p>
+  </div>
+  <div lang="sv">
+    <h1>{t('hero.title')}</h1>
+    <p>{t('hero.subtitle')}</p>
+  </div>
+</I18n>
+
+// paraglide
+<p>{m.heroTitle()}</p>
+
+// typesafe-i18n
+<p>{$LL.HERO_TITLE()}</p>
+
+// svelte-i18n
+<p>{$t('hero.title')}</p>`;
+
+	const interpolationCode = `// svelte-locale
+{t('auth.welcome', { name: 'Vincent' })}
+
+// paraglide
+{m.authWelcome({ name: 'Vincent' })}
+
+// typesafe-i18n
+{$LL.AUTH_WELCOME({ name: 'Vincent' })}
+
+// svelte-i18n
+{$t('auth.welcome', { values: { name: 'Vincent' } })}`;
+
+	const pluralCode = `// svelte-locale
+{plural('tickets.count', count)}
+
+// paraglide
+{m.ticketsCount({ count })}
+
+// typesafe-i18n
+{$LL.TICKETS_COUNT({ count })}
+
+// svelte-i18n
+{$t('tickets.count', { values: { count } })}`;
+
+	const localeSwitchCode = `// svelte-locale
+setLocale('sv')
+
+// paraglide
+redirectToLanguage('sv')
+
+// typesafe-i18n
+setLocale('sv')
+
+// svelte-i18n
+locale.set('sv')`;
+
 	const messagesCode = `import { defineMessages } from 'svelte-locale';
 
 defineMessages({
@@ -555,8 +631,9 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.built_in')}</p>
-				<Table>
-					<TableBody>
+				<div class="overflow-hidden rounded-lg border border-zinc-200">
+					<Table>
+						<TableBody>
 						<TableRow>
 							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">en-US</TableCell>
 							<TableCell class="text-sm text-zinc-600">English (US)</TableCell>
@@ -619,6 +696,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 						</TableRow>
 					</TableBody>
 				</Table>
+				</div>
 			</div>
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.utilities')}</p>
@@ -632,60 +710,42 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="syntax" class="space-y-4">
+		<section id="syntax" class="space-y-6">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('syntax.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('syntax.desc')}</p>
 			</div>
 
-			<Table>
-				<TableHeader>
-					<TableRow>
-						<TableHead>{t('syntax.feature')}</TableHead>
-						<TableHead>{t('syntax.svelte_locale')}</TableHead>
-						<TableHead>{t('syntax.paraglide')}</TableHead>
-						<TableHead>{t('syntax.typesafe_i18n')}</TableHead>
-						<TableHead>{t('syntax.svelte_i18n')}</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					<TableRow>
-						<TableCell class="font-medium">{t('syntax.inline')}</TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&lt;I18n&gt;</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">m.heroTitle()</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$LL.HERO_TITLE()</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$t('hero.title')</code></TableCell>
-					</TableRow>
-					<TableRow>
-						<TableCell class="font-medium">{t('syntax.interpolation')}</TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">t('key', &#123; name &#125;)</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">m.key(&#123; name &#125;)</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$LL.KEY(&#123; name &#125;)</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$t('key', &#123; values: &#123; name &#125; &#125;)</code></TableCell>
-					</TableRow>
-					<TableRow>
-						<TableCell class="font-medium">{t('syntax.plural')}</TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">plural('key', count)</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">m.key(&#123; count &#125;)</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$LL.KEY(&#123; count &#125;)</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$t('key', &#123; values: &#123; count &#125; &#125;)</code></TableCell>
-					</TableRow>
-					<TableRow>
-						<TableCell class="font-medium">{t('syntax.switch')}</TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">setLocale('sv')</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">redirectToLanguage('sv')</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">setLocale('sv')</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">locale.set('sv')</code></TableCell>
-					</TableRow>
-					<TableRow>
-						<TableCell class="font-medium">{t('syntax.rich')}</TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&lt;I18n&gt; children</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&#123;@html&#125;</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&#123;@html&#125;</code></TableCell>
-						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&#123;@html&#125;</code></TableCell>
-					</TableRow>
-				</TableBody>
-			</Table>
+			<div class="space-y-6">
+				<div>
+					<h3 class="mb-2 text-sm font-medium text-zinc-700">Inline i18n in HTML</h3>
+					<CodeBlock code={inlineI18nCode} lang="svelte" />
+				</div>
+
+				<div>
+					<h3 class="mb-2 text-sm font-medium text-zinc-700">String interpolation</h3>
+					<CodeBlock code={interpolationCode} lang="ts" />
+				</div>
+
+				<div>
+					<h3 class="mb-2 text-sm font-medium text-zinc-700">Plural rules</h3>
+					<CodeBlock code={pluralCode} lang="ts" />
+				</div>
+
+				<div>
+					<h3 class="mb-2 text-sm font-medium text-zinc-700">Locale switching</h3>
+					<CodeBlock code={localeSwitchCode} lang="ts" />
+				</div>
+
+				<div>
+					<h3 class="mb-2 text-sm font-medium text-zinc-700">Rich text / components</h3>
+					<p class="mb-3 text-sm text-zinc-600">Renders only the content block matching the active locale. All other locale blocks are stripped at compile time by the Vite plugin — only one snippet ever hits the DOM.</p>
+					<CodeBlock code={richTextCode} lang="svelte" />
+					<p class="mt-3 text-xs text-zinc-600">Each direct child must have a lang attribute matching a configured locale. Any valid Svelte content is allowed inside — components, {'{#if}'}, {'{#each}'}, slots, etc.</p>
+					<p class="mt-2 text-xs text-zinc-600">The Vite plugin (richI18n) transforms the children into proper Svelte snippets at compile time. Missing or duplicate lang values produce warnings during development.</p>
+					<p class="mt-2 text-xs text-zinc-600">Other libraries typically use {'{@html}'} for rich text, which can be less safe and less type-safe.</p>
+				</div>
+			</div>
 		</section>
 
 		<section id="manual" class="space-y-6">
