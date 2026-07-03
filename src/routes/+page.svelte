@@ -238,17 +238,17 @@ import '$lib/i18n/functions';`;
 	];
 
 	const comparisonRows = [
-		{ feature: 'Zero dependencies', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
-		{ feature: 'Server-first / zero flicker', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '✗' },
-		{ feature: 'Svelte 5 runes', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '△' },
-		{ feature: 'npx init scaffolding', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'Zero direct dependencies', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✓', svelte_i18n: '✗' },
+		{ feature: 'Server-first / zero flicker', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '△' },
+		{ feature: 'Svelte 5 runes-friendly', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '△' },
+		{ feature: 'SvelteKit-native scaffolding', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '△', svelte_i18n: '✗' },
 		{ feature: 'Plural rules (Intl)', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✓', svelte_i18n: '✓' },
-		{ feature: 'Logic-based fn() translations', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '△', svelte_i18n: '✗' },
-		{ feature: 'Rich component <I18n>', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✗', svelte_i18n: '✗' },
-		{ feature: 'Intl formatters built-in', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✓', svelte_i18n: '✗' },
-		{ feature: 'RTL via html dir', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'Logic-based fn() translations', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '△', svelte_i18n: '✗' },
+		{ feature: 'Rich component <I18n>', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'Intl formatter helpers', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✓', svelte_i18n: '✗' },
+		{ feature: 'RTL via <html dir>', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: '<LocaleSwitcher> component', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✗', svelte_i18n: '✗' },
-		{ feature: 'HreflangLinks SEO component', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: '<HreflangLinks> SEO component', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: 'URL prefix routing', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
 	];
 </script>
