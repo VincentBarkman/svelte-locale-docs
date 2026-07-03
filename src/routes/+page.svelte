@@ -9,16 +9,153 @@
 	import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '$lib/components/ui/table';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import { Sheet, SheetContent, SheetTrigger } from '$lib/components/ui/sheet';
-	import { Globe, Menu } from '@lucide/svelte';
+	import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '$lib/components/ui/command';
+	import { Kbd } from '$lib/components/ui/kbd';
+	import { Globe, Menu, Search } from '@lucide/svelte';
 	import { setLocale } from 'svelte-locale';
 	import { t } from 'svelte-locale';
 	import { getLocale } from 'svelte-locale';
 
 	let locale = $state(getLocale());
 	let tocOpen = $state(false);
+	let searchOpen = $state(false);
+	let searchValue = $state('');
+	let highlightedSection = $state<string | null>(null);
 
 	$effect(() => {
 		setLocale(locale);
+	});
+
+	// Scroll spy to update URL hash when scrolling
+	const sectionIds = ['install', 'compare', 't', 'plural', 'fn', 'format', 'i18n', 'components', 'bcp', 'syntax', 'manual', 'config', 'routing', 'api'];
+
+	// Search items for fuzzy search - includes section content
+	const searchItems = [
+		{
+			id: 'install',
+			label: t('toc.install'),
+			content: `${t('install.title')} ${t('install.desc')} npx svelte-locale init`
+		},
+		{
+			id: 'compare',
+			label: t('toc.compare'),
+			content: `${t('compare.title')} ${t('compare.desc')} stupid-simple i18n for SvelteKit`
+		},
+		{
+			id: 't',
+			label: t('toc.t'),
+			content: `${t('t.title')} ${t('t.desc')} defineMessages t()`
+		},
+		{
+			id: 'plural',
+			label: t('toc.plural'),
+			content: `${t('plural.title')} ${t('plural.desc')} definePlurals plural()`
+		},
+		{
+			id: 'fn',
+			label: t('toc.fn'),
+			content: `${t('fn.title')} ${t('fn.desc')} fn()`
+		},
+		{
+			id: 'format',
+			label: t('toc.format'),
+			content: `${t('format.title')} ${t('format.desc')} formatDateISO formatDateTimeISO`
+		},
+		{
+			id: 'i18n',
+			label: t('toc.i18n'),
+			content: `${t('i18n.title')} ${t('i18n.desc')} <I18n> component rich text`
+		},
+		{
+			id: 'components',
+			label: t('toc.components'),
+			content: `${t('components.title')} ${t('components.desc')} <LocaleSwitcher> <HreflangLinks>`
+		},
+		{
+			id: 'bcp',
+			label: t('toc.bcp'),
+			content: `${t('bcp.title')} ${t('bcp.desc')} BCP 47 locale regional variants`
+		},
+		{
+			id: 'syntax',
+			label: t('toc.syntax'),
+			content: `${t('syntax.title')} ${t('syntax.desc')} syntax differences paraglide typesafe-i18n svelte-i18n`
+		},
+		{
+			id: 'manual',
+			label: t('toc.manual'),
+			content: `${t('manual.title')} ${t('manual.desc')} manual translation`
+		},
+		{
+			id: 'config',
+			label: t('toc.config'),
+			content: `${t('config.title')} ${t('config.desc')} configuration options`
+		},
+		{
+			id: 'routing',
+			label: t('toc.routing'),
+			content: `${t('routing.title')} ${t('routing.desc')} URL prefix routing`
+		},
+		{
+			id: 'api',
+			label: t('toc.api'),
+			content: `API reference t() plural() fn() setLocale() getLocale() defineMessages() definePlurals()`
+		}
+	];
+
+	function navigateToSection(id: string) {
+		const element = document.getElementById(id);
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+			highlightedSection = id;
+			searchOpen = false;
+			searchValue = '';
+			// Remove highlight after 2 seconds
+			setTimeout(() => {
+				highlightedSection = null;
+			}, 2000);
+		}
+	}
+
+	function updateActiveSection() {
+		const scrollPosition = window.scrollY + 100;
+		let activeId = '';
+
+		for (const id of sectionIds) {
+			const section = document.getElementById(id);
+			if (section) {
+				const sectionTop = section.offsetTop;
+				const sectionBottom = sectionTop + section.offsetHeight;
+				if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+					activeId = id;
+					break;
+				}
+			}
+		}
+
+		if (activeId && window.location.hash !== `#${activeId}`) {
+			history.replaceState(null, '', `#${activeId}`);
+		}
+	}
+
+	$effect(() => {
+		window.addEventListener('scroll', updateActiveSection, { passive: true });
+		return () => window.removeEventListener('scroll', updateActiveSection);
+	});
+
+	// Keyboard shortcut for search (Cmd+K or Ctrl+K)
+	$effect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+				e.preventDefault();
+				searchOpen = !searchOpen;
+			}
+			if (e.key === 'Escape' && searchOpen) {
+				searchOpen = false;
+			}
+		};
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
 	});
 
 	const quickInstallCode = `npx svelte-locale init`;
@@ -409,11 +546,28 @@ import '$lib/i18n/functions';`;
 		</div>
 	</header>
 
+	<CommandDialog bind:open={searchOpen}>
+		<CommandInput placeholder="Search documentation..." bind:value={searchValue} />
+		<CommandList>
+			<CommandEmpty>No results found.</CommandEmpty>
+			<CommandGroup heading="Sections">
+				{#each searchItems as item (item.id)}
+					<CommandItem value={item.content} onclick={() => navigateToSection(item.id)}>
+						<div class="flex flex-col">
+							<span class="font-medium">{item.label}</span>
+							<span class="text-xs text-zinc-500">{item.content}</span>
+						</div>
+					</CommandItem>
+				{/each}
+			</CommandGroup>
+		</CommandList>
+	</CommandDialog>
+
 	<main class="pb-28 lg:grid lg:grid-cols-[1fr_minmax(0,672px)_1fr]">
 		<!-- Main content -->
 		<div class="max-w-2xl w-full px-6 space-y-20 lg:col-start-2">
 
-		<section id="install" class="space-y-4">
+		<section id="install" class="space-y-4 {highlightedSection === 'install' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('install.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('install.desc')}</p>
@@ -436,7 +590,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section id="compare" class="space-y-4">
+		<section id="compare" class="space-y-4 {highlightedSection === 'compare' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('compare.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('compare.desc')}</p>
@@ -472,7 +626,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section id="t" class="space-y-4">
+		<section id="t" class="space-y-4 {highlightedSection === 't' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('t.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('t.desc')}</p>
@@ -521,7 +675,7 @@ t('auth.welcome', { name: 'Vincent' })   // → 'Welcome back, Vincent'`} lang="
 			</Card>
 		</section>
 
-		<section id="plural" class="space-y-4">
+		<section id="plural" class="space-y-4 {highlightedSection === 'plural' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('plural.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('plural.desc')}</p>
@@ -566,7 +720,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</Card>
 		</section>
 
-		<section id="fn" class="space-y-4">
+		<section id="fn" class="space-y-4 {highlightedSection === 'fn' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('fn.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('fn.desc')}</p>
@@ -575,7 +729,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			<CodeBlock code={fnExampleCode} lang="ts" />
 		</section>
 
-		<section id="format" class="space-y-4">
+		<section id="format" class="space-y-4 {highlightedSection === 'format' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('format.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('format.desc')}</p>
@@ -599,7 +753,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="i18n" class="space-y-4">
+		<section id="i18n" class="space-y-4 {highlightedSection === 'i18n' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('i18n.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('i18n.desc')}</p>
@@ -610,7 +764,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="components" class="space-y-4">
+		<section id="components" class="space-y-4 {highlightedSection === 'components' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('components.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('components.desc')}</p>
@@ -619,7 +773,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			<CodeBlock code={localeLinksCode} lang="svelte" />
 		</section>
 
-		<section id="bcp" class="space-y-4">
+		<section id="bcp" class="space-y-4 {highlightedSection === 'bcp' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('bcp.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('bcp.desc')}</p>
@@ -710,7 +864,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="syntax" class="space-y-6">
+		<section id="syntax" class="space-y-6 {highlightedSection === 'syntax' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('syntax.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('syntax.desc')}</p>
@@ -748,7 +902,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="manual" class="space-y-6">
+		<section id="manual" class="space-y-6 {highlightedSection === 'manual' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('manual.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('manual.desc')}</p>
@@ -794,7 +948,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="config" class="space-y-4">
+		<section id="config" class="space-y-4 {highlightedSection === 'config' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('config.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('config.desc')}</p>
@@ -823,7 +977,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="routing" class="space-y-4">
+		<section id="routing" class="space-y-4 {highlightedSection === 'routing' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('routing.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('routing.desc')}</p>
@@ -852,7 +1006,7 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="api">
+		<section id="api" class="space-y-4 {highlightedSection === 'api' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<h2 class="mb-6 text-xl font-semibold">{t('api.title')}</h2>
 			<div class="space-y-8">
 				{#each [
@@ -888,6 +1042,18 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 		<!-- Desktop sidebar: lang switcher + TOC -->
 		<aside class="hidden lg:block lg:col-start-3 lg:col-end-4 pl-6 pt-1">
 				<div class="sticky top-8 space-y-6 w-48">
+					<Button
+						variant="outline"
+						size="sm"
+						class="w-full justify-between"
+						onclick={() => searchOpen = true}
+					>
+						<div class="flex items-center">
+							<Search size={16} class="mr-2" />
+							Search...
+						</div>
+						<Kbd>⌘K</Kbd>
+					</Button>
 					<Select type="single" value={locale} onValueChange={(val) => locale = val as import('svelte-locale').Locale}>
 						<SelectTrigger class="w-full bg-white">
 							{locale === 'en' ? 'English' : locale === 'sv' ? 'Svenska' : 'Language'}
@@ -920,6 +1086,14 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			<!-- Mobile TOC sheet trigger + lang switcher -->
 			<Sheet open={tocOpen} onOpenChange={(open) => tocOpen = open}>
 				<div class="lg:hidden fixed top-4 right-4 z-20 flex items-center gap-2">
+					<Button
+						variant="outline"
+						size="sm"
+						class="p-2"
+						onclick={() => searchOpen = true}
+					>
+						<Search size={16} />
+					</Button>
 					<Select type="single" value={locale} onValueChange={(val) => locale = val as import('svelte-locale').Locale}>
 						<SelectTrigger class="w-[120px] bg-white">
 							{locale === 'en' ? 'English' : locale === 'sv' ? 'Svenska' : 'Language'}
