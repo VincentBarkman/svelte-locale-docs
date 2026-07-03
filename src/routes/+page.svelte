@@ -257,6 +257,8 @@ import '$lib/i18n/functions';`;
 		{ feature: 'Rich component <I18n>', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: 'Rich text / component interpolation', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '△' },
 		{ feature: 'Intl formatter helpers', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✓', svelte_i18n: '✗' },
+		{ feature: 'ISO 8601 formatters', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✗', svelte_i18n: '✗' },
+		{ feature: 'BCP 47 / regional locale support', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: 'RTL via <html dir>', svelte_locale: '✓', paraglide: '✓', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: '<LocaleSwitcher> component', svelte_locale: '✓', paraglide: '✗', typesafe_i18n: '✗', svelte_i18n: '✗' },
 		{ feature: '<HreflangLinks> SEO component', svelte_locale: '✓', paraglide: '△', typesafe_i18n: '✗', svelte_i18n: '✗' },
@@ -412,6 +414,16 @@ import '$lib/i18n/functions';`;
 					<ShowcaseFormat />
 				</CardContent>
 			</Card>
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('format.iso_date')}</p>
+				<p class="text-xs text-zinc-600">{t('format.iso_date_desc')}</p>
+				<CodeBlock code={`formatDateISO(new Date())          // → '2026-07-03'\nformatDateISO('2026-01-15T10:30Z') // → '2026-01-15'`} lang="ts" />
+			</div>
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('format.iso_datetime')}</p>
+				<p class="text-xs text-zinc-600">{t('format.iso_datetime_desc')}</p>
+				<CodeBlock code={`formatDateTimeISO(new Date()) // → '2026-07-03T10:00:00.000Z'`} lang="ts" />
+			</div>
 		</section>
 
 		<section class="space-y-4">
@@ -432,6 +444,157 @@ import '$lib/i18n/functions';`;
 			</div>
 			<CodeBlock code={localeSwitcherCode} lang="svelte" />
 			<CodeBlock code={localeLinksCode} lang="svelte" />
+		</section>
+
+		<section class="space-y-4">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">{t('bcp.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('bcp.desc')}</p>
+			</div>
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('bcp.regional')}</p>
+				<p class="text-xs text-zinc-600">{t('bcp.regional_desc')}</p>
+				<CodeBlock code={`// vite.config.ts\nrichI18n({ locales: ['en-US', 'en-GB', 'pt-BR', 'zh-CN', 'zh-TW'] })\n\n// src/lib/i18n/messages.ts\ndefineMessages({\n  'en-US': { 'currency.symbol': '$' },\n  'en-GB': { 'currency.symbol': '£' },\n  'pt-BR': { 'greeting': 'Olá' }\n});`} lang="ts" />
+			</div>
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('bcp.built_in')}</p>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>{t('bcp.tag')}</TableHead>
+							<TableHead>{t('bcp.name')}</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						<TableRow>
+							<TableCell>en-US</TableCell>
+							<TableCell>English (US)</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>en-GB</TableCell>
+							<TableCell>English (UK)</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>en-AU</TableCell>
+							<TableCell>English (Australia)</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>en-CA</TableCell>
+							<TableCell>English (Canada)</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>fr-FR / fr-CA / fr-BE / fr-CH</TableCell>
+							<TableCell>French variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>de-DE / de-AT / de-CH</TableCell>
+							<TableCell>German variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>es-ES / es-MX / es-AR / es-CO</TableCell>
+							<TableCell>Spanish variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>pt-PT / pt-BR</TableCell>
+							<TableCell>Portuguese variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>zh-CN / zh-TW / zh-HK</TableCell>
+							<TableCell>Chinese variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>ar-SA / ar-EG</TableCell>
+							<TableCell>Arabic variants (RTL)</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>nl-NL / nl-BE</TableCell>
+							<TableCell>Dutch variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>it-IT / it-CH</TableCell>
+							<TableCell>Italian variants</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>sv-SE / nb-NO / nn-NO / fi-FI / da-DK</TableCell>
+							<TableCell>Nordic</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>ru-RU / uk-UA / pl-PL</TableCell>
+							<TableCell>Eastern European</TableCell>
+						</TableRow>
+						<TableRow>
+							<TableCell>ja-JP / ko-KR / hi-IN</TableCell>
+							<TableCell>Asian</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</div>
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('bcp.utilities')}</p>
+				<p class="text-xs text-zinc-600">{t('bcp.utilities_desc')}</p>
+				<CodeBlock code={`import { getBaseLocale, normalizeLocale, getLocaleDir, getLocaleName } from 'svelte-locale';\n\ngetBaseLocale('en-US')      // → 'en'\nnormalizeLocale('pt-br')    // → 'pt-BR'\ngetLocaleDir('ar-SA')       // → 'rtl'\ngetLocaleDir('ar-DZ')       // → 'rtl'  (falls back to 'ar')\ngetLocaleName('pt-BR')      // → 'Português (Brasil)'`} lang="ts" />
+			</div>
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('bcp.accept_lang')}</p>
+				<p class="text-xs text-zinc-600">{t('bcp.accept_lang_desc')}</p>
+				<CodeBlock code={`// Accept-Language: pt-BR, pt;q=0.9, en;q=0.8\n// → resolves to pt-BR if configured, then pt, then en\n// Works automatically — no extra configuration needed.`} lang="ts" />
+			</div>
+		</section>
+
+		<section class="space-y-4">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">{t('syntax.title')}</h2>
+				<p class="text-sm text-zinc-500">{t('syntax.desc')}</p>
+			</div>
+
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>{t('syntax.feature')}</TableHead>
+						<TableHead>{t('syntax.svelte_locale')}</TableHead>
+						<TableHead>{t('syntax.paraglide')}</TableHead>
+						<TableHead>{t('syntax.typesafe_i18n')}</TableHead>
+						<TableHead>{t('syntax.svelte_i18n')}</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					<TableRow>
+						<TableCell class="font-medium">{t('syntax.inline')}</TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&lt;I18n&gt;</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">m.heroTitle()</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$LL.HERO_TITLE()</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$t('hero.title')</code></TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell class="font-medium">{t('syntax.interpolation')}</TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">t('key', &#123; name &#125;)</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">m.key(&#123; name &#125;)</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$LL.KEY(&#123; name &#125;)</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$t('key', &#123; values: &#123; name &#125; &#125;)</code></TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell class="font-medium">{t('syntax.plural')}</TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">plural('key', count)</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">m.key(&#123; count &#125;)</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$LL.KEY(&#123; count &#125;)</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">$t('key', &#123; values: &#123; count &#125; &#125;)</code></TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell class="font-medium">{t('syntax.switch')}</TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">setLocale('sv')</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">redirectToLanguage('sv')</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">setLocale('sv')</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">locale.set('sv')</code></TableCell>
+					</TableRow>
+					<TableRow>
+						<TableCell class="font-medium">{t('syntax.rich')}</TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&lt;I18n&gt; children</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&#123;@html&#125;</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&#123;@html&#125;</code></TableCell>
+						<TableCell><code class="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">&#123;@html&#125;</code></TableCell>
+					</TableRow>
+				</TableBody>
+			</Table>
 		</section>
 
 		<section class="space-y-6">
