@@ -8,18 +8,60 @@
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from '$lib/components/ui/table';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
-	import { Globe } from '@lucide/svelte';
+	import { Sheet, SheetContent, SheetTrigger } from '$lib/components/ui/sheet';
+	import { Globe, Menu } from '@lucide/svelte';
 	import { setLocale } from 'svelte-locale';
 	import { t } from 'svelte-locale';
 	import { getLocale } from 'svelte-locale';
 
 	let locale = $state(getLocale());
+	let tocOpen = $state(false);
 
 	$effect(() => {
 		setLocale(locale);
 	});
 
 	const quickInstallCode = `npx svelte-locale init`;
+
+	const tInlineCode = `<!-- src/routes/+page.svelte -->
+<` + `script lang="ts">
+import { defineMessages } from 'svelte-locale';
+import { t } from 'svelte-locale';
+
+defineMessages({
+  en: {
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'auth.welcome': 'Welcome back, {name}'
+  },
+  sv: {
+    'common.save': 'Spara',
+    'common.cancel': 'Avbryt',
+    'auth.welcome': 'Välkommen tillbaka, {name}'
+  }
+});
+</` + `script>
+
+<p>{t('common.save')}</p>                         <!-- → 'Save' -->
+<p>{t('auth.welcome', { name: 'Vincent' })}</p>   <!-- → 'Welcome back, Vincent' -->`;
+
+	const pluralInlineCode = `<!-- src/routes/+page.svelte -->
+<` + `script lang="ts">
+import { definePlurals } from 'svelte-locale';
+import { plural } from 'svelte-locale';
+
+definePlurals({
+  en: {
+    'tickets.count': { one: '{count} ticket', other: '{count} tickets' }
+  },
+  sv: {
+    'tickets.count': { one: '{count} biljett', other: '{count} biljetter' }
+  }
+});
+</` + `script>
+
+<p>{plural('tickets.count', 1)}</p>  <!-- → '1 ticket' -->
+<p>{plural('tickets.count', 5)}</p>  <!-- → '5 tickets' -->`;
 
 	const messagesCode = `import { defineMessages } from 'svelte-locale';
 
@@ -272,18 +314,7 @@ import '$lib/i18n/functions';`;
 	<meta name="description" content="A stupid-simple, SvelteKit-native i18n library for Svelte 5." />
 </svelte:head>
 
-<div class="min-h-screen bg-white font-sans text-zinc-900 relative">
-	<div class="absolute top-6 right-6">
-		<Select type="single" value={locale} onValueChange={(val) => locale = val as import('svelte-locale').Locale}>
-			<SelectTrigger class="w-[140px]">
-				{locale === 'en' ? 'English' : locale === 'sv' ? 'Svenska' : 'Language'}
-			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="en">English</SelectItem>
-				<SelectItem value="sv">Svenska</SelectItem>
-			</SelectContent>
-		</Select>
-	</div>
+<div class="min-h-screen bg-white font-sans text-zinc-900">
 
 	<header class="mx-auto flex max-w-2xl flex-col items-center px-6 pb-10 pt-20 text-center">
 		<div class="mb-5 flex size-16 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm text-zinc-700">
@@ -302,9 +333,11 @@ import '$lib/i18n/functions';`;
 		</div>
 	</header>
 
-	<main class="mx-auto max-w-2xl space-y-20 px-6 pb-28">
+	<main class="pb-28 lg:grid lg:grid-cols-[1fr_minmax(0,672px)_1fr]">
+		<!-- Main content -->
+		<div class="max-w-2xl w-full px-6 space-y-20 lg:col-start-2">
 
-		<section class="space-y-4">
+		<section id="install" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('install.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('install.desc')}</p>
@@ -327,7 +360,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="compare" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('compare.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('compare.desc')}</p>
@@ -363,13 +396,47 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="t" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('t.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('t.desc')}</p>
 			</div>
-			<CodeBlock code={messagesCode} lang="ts" filename="src/lib/i18n/messages.ts" />
-			<CodeBlock code={tExampleCode} lang="ts" />
+
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('t.usage_title')}</p>
+				<p class="text-xs text-zinc-600">{t('t.usage_desc')}</p>
+			</div>
+
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('t.language_file')}</p>
+				<CodeBlock code={`// src/lib/i18n/messages.ts
+import { defineMessages } from 'svelte-locale';
+
+defineMessages({
+  en: {
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'auth.welcome': 'Welcome back, {name}'
+  },
+  sv: {
+    'common.save': 'Spara',
+    'common.cancel': 'Avbryt',
+    'auth.welcome': 'Välkommen tillbaka, {name}'
+  }
+});
+
+// src/routes/+page.svelte
+import { t } from 'svelte-locale';
+
+t('common.save')                         // → 'Save'
+t('auth.welcome', { name: 'Vincent' })   // → 'Welcome back, Vincent'`} lang="ts" />
+			</div>
+
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('t.inline')}</p>
+				<CodeBlock code={tInlineCode} lang="svelte" />
+			</div>
+
 			<Card>
 				<CardContent class="pt-4">
 					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">{t('t.demo')}</p>
@@ -378,13 +445,43 @@ import '$lib/i18n/functions';`;
 			</Card>
 		</section>
 
-		<section class="space-y-4">
+		<section id="plural" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('plural.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('plural.desc')}</p>
 			</div>
-			<CodeBlock code={pluralsCode} lang="ts" filename="src/lib/i18n/plurals.ts" />
-			<CodeBlock code={pluralExampleCode} lang="ts" />
+
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('plural.usage_title')}</p>
+				<p class="text-xs text-zinc-600">{t('plural.usage_desc')}</p>
+			</div>
+
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('plural.language_file')}</p>
+				<CodeBlock code={`// src/lib/i18n/plurals.ts
+import { definePlurals } from 'svelte-locale';
+
+definePlurals({
+  en: {
+    'tickets.count': { one: '{count} ticket', other: '{count} tickets' }
+  },
+  sv: {
+    'tickets.count': { one: '{count} biljett', other: '{count} biljetter' }
+  }
+});
+
+// src/routes/+page.svelte
+import { plural } from 'svelte-locale';
+
+plural('tickets.count', 1)  // → '1 ticket'
+plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
+			</div>
+
+			<div class="mt-4 space-y-2">
+				<p class="text-sm font-medium text-zinc-700">{t('plural.inline')}</p>
+				<CodeBlock code={pluralInlineCode} lang="svelte" />
+			</div>
+
 			<Card>
 				<CardContent class="pt-4">
 					<p class="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-600">{t('t.demo')}</p>
@@ -393,7 +490,7 @@ import '$lib/i18n/functions';`;
 			</Card>
 		</section>
 
-		<section class="space-y-4">
+		<section id="fn" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('fn.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('fn.desc')}</p>
@@ -402,7 +499,7 @@ import '$lib/i18n/functions';`;
 			<CodeBlock code={fnExampleCode} lang="ts" />
 		</section>
 
-		<section class="space-y-4">
+		<section id="format" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('format.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('format.desc')}</p>
@@ -426,7 +523,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="i18n" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('i18n.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('i18n.desc')}</p>
@@ -437,7 +534,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="components" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('components.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('components.desc')}</p>
@@ -446,7 +543,7 @@ import '$lib/i18n/functions';`;
 			<CodeBlock code={localeLinksCode} lang="svelte" />
 		</section>
 
-		<section class="space-y-4">
+		<section id="bcp" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('bcp.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('bcp.desc')}</p>
@@ -459,72 +556,66 @@ import '$lib/i18n/functions';`;
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.built_in')}</p>
 				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>{t('bcp.tag')}</TableHead>
-							<TableHead>{t('bcp.name')}</TableHead>
-						</TableRow>
-					</TableHeader>
 					<TableBody>
 						<TableRow>
-							<TableCell>en-US</TableCell>
-							<TableCell>English (US)</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">en-US</TableCell>
+							<TableCell class="text-sm text-zinc-600">English (US)</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>en-GB</TableCell>
-							<TableCell>English (UK)</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">en-GB</TableCell>
+							<TableCell class="text-sm text-zinc-600">English (UK)</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>en-AU</TableCell>
-							<TableCell>English (Australia)</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">en-AU</TableCell>
+							<TableCell class="text-sm text-zinc-600">English (Australia)</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>en-CA</TableCell>
-							<TableCell>English (Canada)</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">en-CA</TableCell>
+							<TableCell class="text-sm text-zinc-600">English (Canada)</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>fr-FR / fr-CA / fr-BE / fr-CH</TableCell>
-							<TableCell>French variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">fr-FR / fr-CA / fr-BE / fr-CH</TableCell>
+							<TableCell class="text-sm text-zinc-600">French variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>de-DE / de-AT / de-CH</TableCell>
-							<TableCell>German variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">de-DE / de-AT / de-CH</TableCell>
+							<TableCell class="text-sm text-zinc-600">German variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>es-ES / es-MX / es-AR / es-CO</TableCell>
-							<TableCell>Spanish variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">es-ES / es-MX / es-AR / es-CO</TableCell>
+							<TableCell class="text-sm text-zinc-600">Spanish variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>pt-PT / pt-BR</TableCell>
-							<TableCell>Portuguese variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">pt-PT / pt-BR</TableCell>
+							<TableCell class="text-sm text-zinc-600">Portuguese variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>zh-CN / zh-TW / zh-HK</TableCell>
-							<TableCell>Chinese variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">zh-CN / zh-TW / zh-HK</TableCell>
+							<TableCell class="text-sm text-zinc-600">Chinese variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>ar-SA / ar-EG</TableCell>
-							<TableCell>Arabic variants (RTL)</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">ar-SA / ar-EG</TableCell>
+							<TableCell class="text-sm text-zinc-600">Arabic variants (RTL)</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>nl-NL / nl-BE</TableCell>
-							<TableCell>Dutch variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">nl-NL / nl-BE</TableCell>
+							<TableCell class="text-sm text-zinc-600">Dutch variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>it-IT / it-CH</TableCell>
-							<TableCell>Italian variants</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">it-IT / it-CH</TableCell>
+							<TableCell class="text-sm text-zinc-600">Italian variants</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>sv-SE / nb-NO / nn-NO / fi-FI / da-DK</TableCell>
-							<TableCell>Nordic</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">sv-SE / nb-NO / nn-NO / fi-FI / da-DK</TableCell>
+							<TableCell class="text-sm text-zinc-600">Nordic</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>ru-RU / uk-UA / pl-PL</TableCell>
-							<TableCell>Eastern European</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">ru-RU / uk-UA / pl-PL</TableCell>
+							<TableCell class="text-sm text-zinc-600">Eastern European</TableCell>
 						</TableRow>
 						<TableRow>
-							<TableCell>ja-JP / ko-KR / hi-IN</TableCell>
-							<TableCell>Asian</TableCell>
+							<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">ja-JP / ko-KR / hi-IN</TableCell>
+							<TableCell class="text-sm text-zinc-600">Asian</TableCell>
 						</TableRow>
 					</TableBody>
 				</Table>
@@ -541,7 +632,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="syntax" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('syntax.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('syntax.desc')}</p>
@@ -597,7 +688,7 @@ import '$lib/i18n/functions';`;
 			</Table>
 		</section>
 
-		<section class="space-y-6">
+		<section id="manual" class="space-y-6">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('manual.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('manual.desc')}</p>
@@ -643,7 +734,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="config" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('config.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('config.desc')}</p>
@@ -663,7 +754,7 @@ import '$lib/i18n/functions';`;
 							{ key: 'detection', desc: "Order of locale detection sources: 'url' → 'cookie' → 'accept-language' → 'default'." },
 						] as row (row.key)}
 							<TableRow>
-								<TableCell class="w-64 font-mono text-xs font-medium text-zinc-800">{row.key}</TableCell>
+								<TableCell class="w-72 align-top font-mono text-xs font-medium text-zinc-800">{row.key}</TableCell>
 								<TableCell class="text-sm text-zinc-600">{row.desc}</TableCell>
 							</TableRow>
 						{/each}
@@ -672,7 +763,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section class="space-y-4">
+		<section id="routing" class="space-y-4">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('routing.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('routing.desc')}</p>
@@ -701,7 +792,7 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
-		<section>
+		<section id="api">
 			<h2 class="mb-6 text-xl font-semibold">{t('api.title')}</h2>
 			<div class="space-y-8">
 				{#each [
@@ -732,6 +823,76 @@ import '$lib/i18n/functions';`;
 			</div>
 		</section>
 
+			</div>
+
+		<!-- Desktop sidebar: lang switcher + TOC -->
+		<aside class="hidden lg:block lg:col-start-3 lg:col-end-4 pl-6 pt-1">
+				<div class="sticky top-8 space-y-6 w-48">
+					<Select type="single" value={locale} onValueChange={(val) => locale = val as import('svelte-locale').Locale}>
+						<SelectTrigger class="w-full bg-white">
+							{locale === 'en' ? 'English' : locale === 'sv' ? 'Svenska' : 'Language'}
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="en">English</SelectItem>
+							<SelectItem value="sv">Svenska</SelectItem>
+						</SelectContent>
+					</Select>
+					<nav>
+				<p class="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">{t('toc.title')}</p>
+				<ul class="space-y-2 text-sm">
+					<li><a href="#install" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.install')}</a></li>
+					<li><a href="#compare" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.compare')}</a></li>
+					<li><a href="#t" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.t')}</a></li>
+					<li><a href="#plural" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.plural')}</a></li>
+					<li><a href="#fn" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.fn')}</a></li>
+					<li><a href="#format" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.format')}</a></li>
+					<li><a href="#i18n" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.i18n')}</a></li>
+					<li><a href="#components" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.components')}</a></li>
+					<li><a href="#bcp" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.bcp')}</a></li>
+					<li><a href="#syntax" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.syntax')}</a></li>
+					<li><a href="#manual" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.manual')}</a></li>
+					<li><a href="#api" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.api')}</a></li>
+						</ul>
+					</nav>
+				</div>
+			</aside>
+
+			<!-- Mobile TOC sheet trigger + lang switcher -->
+			<Sheet open={tocOpen} onOpenChange={(open) => tocOpen = open}>
+				<div class="lg:hidden fixed top-4 right-4 z-20 flex items-center gap-2">
+					<Select type="single" value={locale} onValueChange={(val) => locale = val as import('svelte-locale').Locale}>
+						<SelectTrigger class="w-[120px] bg-white">
+							{locale === 'en' ? 'English' : locale === 'sv' ? 'Svenska' : 'Language'}
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="en">English</SelectItem>
+							<SelectItem value="sv">Svenska</SelectItem>
+						</SelectContent>
+					</Select>
+					<SheetTrigger class="p-2 rounded-lg border border-zinc-200 bg-white shadow-sm">
+						<Menu size={20} />
+					</SheetTrigger>
+				</div>
+				<SheetContent side="right" class="w-64">
+					<div class="p-6">
+					<p class="mb-4 text-sm font-semibold uppercase tracking-widest text-zinc-500">{t('toc.title')}</p>
+					<ul class="space-y-3 text-sm">
+						<li><a href="#install" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.install')}</a></li>
+						<li><a href="#compare" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.compare')}</a></li>
+						<li><a href="#t" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.t')}</a></li>
+						<li><a href="#plural" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.plural')}</a></li>
+						<li><a href="#fn" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.fn')}</a></li>
+						<li><a href="#format" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.format')}</a></li>
+						<li><a href="#i18n" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.i18n')}</a></li>
+						<li><a href="#components" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.components')}</a></li>
+						<li><a href="#bcp" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.bcp')}</a></li>
+						<li><a href="#syntax" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.syntax')}</a></li>
+						<li><a href="#manual" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.manual')}</a></li>
+						<li><a href="#api" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api')}</a></li>
+					</ul>
+					</div>
+				</SheetContent>
+			</Sheet>
 	</main>
 
 	<footer class="border-t border-zinc-100 py-8 text-center text-sm text-zinc-600">
@@ -740,7 +901,7 @@ import '$lib/i18n/functions';`;
 			<Button variant="link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">Svelte</Button>
 			·
 			<Button variant="link" href="https://www.npmjs.com/package/svelte-locale" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">npm</Button>
-			· {t('footer.by')}
+			{t('footer.by')}
 			<Button variant="link" href="https://vincentbarkman.com" target="_blank" rel="noopener noreferrer" class="h-auto p-0 text-sm text-zinc-600">Vincent A. Barkman</Button>
 		</p>
 	</footer>
