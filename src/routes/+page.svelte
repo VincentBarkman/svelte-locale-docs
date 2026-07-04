@@ -23,14 +23,14 @@
 	let searchOpen = $state(false);
 	let searchValue = $state('');
 	let highlightedSection = $state<string | null>(null);
-	let alphaDialogOpen = $state(true);
+	let betaDialogOpen = $state(true);
 
 	$effect(() => {
 		setLocale(locale);
 	});
 
 	// Scroll spy to update URL hash when scrolling
-	const sectionIds = ['install', 'compare', 't', 'plural', 'fn', 'format', 'i18n', 'components', 'bcp', 'syntax', 'manual', 'config', 'routing', 'api'];
+	const sectionIds = ['install', 'compare', 't', 'plural', 'fn', 'format', 'routing-helpers', 'i18n', 'components', 'bcp', 'syntax', 'manual', 'config', 'server-api', 'api-usage', 'routing-strategies', 'locale-registry', 'vite-plugin', 'api'];
 
 	// Search items for fuzzy search - includes section content
 	const searchItems = [
@@ -65,6 +65,11 @@
 			content: `${t('format.title')} ${t('format.desc')} formatDateISO formatDateTimeISO`
 		},
 		{
+			id: 'routing-helpers',
+			label: 'Routing Helpers',
+			content: 'Routing helpers withLocale() switchLocaleInPath() getLocaleFromPath() stripLocalePrefix()'
+		},
+		{
 			id: 'i18n',
 			label: t('toc.i18n'),
 			content: `${t('i18n.title')} ${t('i18n.desc')} <I18n> component rich text`
@@ -95,9 +100,29 @@
 			content: `${t('config.title')} ${t('config.desc')} configuration options`
 		},
 		{
-			id: 'routing',
-			label: t('toc.routing'),
-			content: `${t('routing.title')} ${t('routing.desc')} URL prefix routing`
+			id: 'server-api',
+			label: 'Server API',
+			content: 'Server API handleI18n() detectLocale() SvelteKit hooks'
+		},
+		{
+			id: 'api-usage',
+			label: 'API Usage',
+			content: 'API Usage namespace vs direct imports i18n.defineMessages()'
+		},
+		{
+			id: 'routing-strategies',
+			label: 'Routing Strategies',
+			content: 'Routing strategies URL prefix locale routing configuration'
+		},
+		{
+			id: 'locale-registry',
+			label: 'Locale Registry',
+			content: 'Built-in locale registry getLocaleRegistry() getLocaleName() getLocaleDir()'
+		},
+		{
+			id: 'vite-plugin',
+			label: 'Vite Plugin',
+			content: 'Vite plugin richI18n() compile-time transformation'
 		},
 		{
 			id: 'api',
@@ -218,16 +243,15 @@
 
 	const tInlineCode = `<!-- src/routes/+page.svelte -->
 <` + `script lang="ts">
-import { defineMessages } from 'svelte-locale';
-import { t } from 'svelte-locale';
+import i18n from 'svelte-locale';
 
-defineMessages({
-  en: {
+i18n.defineMessages({
+  'en-US': {
     'common.save': 'Save',
     'common.cancel': 'Cancel',
     'auth.welcome': 'Welcome back, {name}'
   },
-  sv: {
+  'sv-SE': {
     'common.save': 'Spara',
     'common.cancel': 'Avbryt',
     'auth.welcome': 'Välkommen tillbaka, {name}'
@@ -235,102 +259,73 @@ defineMessages({
 });
 </` + `script>
 
-<p>{t('common.save')}</p>                         <!-- → 'Save' -->
-<p>{t('auth.welcome', { name: 'Vincent' })}</p>   <!-- → 'Welcome back, Vincent' -->`;
+<p>{i18n.t('common.save')}</p>
+<p>{i18n.t('auth.welcome', { name: 'Vincent' })}</p>`;
 
 	const pluralInlineCode = `<!-- src/routes/+page.svelte -->
 <` + `script lang="ts">
-import { definePlurals } from 'svelte-locale';
-import { plural } from 'svelte-locale';
+import i18n from 'svelte-locale';
 
-definePlurals({
-  en: {
+i18n.definePlurals({
+  'en-US': {
     'tickets.count': { one: '{count} ticket', other: '{count} tickets' }
   },
-  sv: {
+  'sv-SE': {
     'tickets.count': { one: '{count} biljett', other: '{count} biljetter' }
   }
 });
 </` + `script>
 
-<p>{plural('tickets.count', 1)}</p>  <!-- → '1 ticket' -->
-<p>{plural('tickets.count', 5)}</p>  <!-- → '5 tickets' -->`;
+<p>{i18n.plural('tickets.count', 1)}</p>
+<p>{i18n.plural('tickets.count', 5)}</p>`;
 
-	const richTextCode = `// svelte-locale
-<I18n key="home.hero">
+	const richTextCode = `<I18n key="home.hero">
   <div lang="en">
     <h1>Support made simple</h1>
   </div>
   <div lang="sv">
     <h1>Support gjort enkelt</h1>
   </div>
-</I18n>
+</I18n>  // svelte-locale
 
-// paraglide
-{@html m.termsAccept()}
+{@html m.termsAccept()}  // paraglide
 
-// typesafe-i18n
-{@html $LL.TERMS_ACCEPT()}
+{@html $LL.TERMS_ACCEPT()}  // typesafe-i18n
 
-// svelte-i18n
-{@html $t('terms.accept')}`;
+{@html $t('terms.accept')}`;  // svelte-i18n
 
-	const inlineI18nCode = `// svelte-locale
-<I18n key="home.hero">
-  <div lang="en">
-    <h1>{t('hero.title')}</h1>
-    <p>{t('hero.subtitle')}</p>
-  </div>
-  <div lang="sv">
-    <h1>{t('hero.title')}</h1>
-    <p>{t('hero.subtitle')}</p>
-  </div>
-</I18n>
+	const inlineI18nCode = `<h1>{t('hero.title')}</h1>  // svelte-locale
+<p>{t('hero.subtitle')}</p>
 
-// paraglide
-<p>{m.heroTitle()}</p>
+<p>{m.heroTitle()}</p>  // paraglide
 
-// typesafe-i18n
-<p>{$LL.HERO_TITLE()}</p>
+<p>{$LL.HERO_TITLE()}</p>  // typesafe-i18n
 
-// svelte-i18n
-<p>{$t('hero.title')}</p>`;
+<p>{$t('hero.title')}</p>  // svelte-i18n`;
 
-	const interpolationCode = `// svelte-locale
-{t('auth.welcome', { name: 'Vincent' })}
+	const interpolationCode = `{t('auth.welcome', { name: 'Vincent' })}  // svelte-locale
 
-// paraglide
-{m.authWelcome({ name: 'Vincent' })}
+{m.authWelcome({ name: 'Vincent' })}  // paraglide
 
-// typesafe-i18n
-{$LL.AUTH_WELCOME({ name: 'Vincent' })}
+{$LL.AUTH_WELCOME({ name: 'Vincent' })}  // typesafe-i18n
 
-// svelte-i18n
-{$t('auth.welcome', { values: { name: 'Vincent' } })}`;
+{$t('auth.welcome', { values: { name: 'Vincent' } })}`;  // svelte-i18n
 
-	const pluralCode = `// svelte-locale
-{plural('tickets.count', count)}
+	const pluralCode = `{plural('tickets.count', count)}  // svelte-locale
 
-// paraglide
-{m.ticketsCount({ count })}
+{m.ticketsCount({ count })}  // paraglide
 
-// typesafe-i18n
-{$LL.TICKETS_COUNT({ count })}
+{$LL.TICKETS_COUNT({ count })}  // typesafe-i18n
 
-// svelte-i18n
-{$t('tickets.count', { values: { count } })}`;
+{$t('tickets.count', { values: { count } })}`;  // svelte-i18n
 
-	const localeSwitchCode = `// svelte-locale
-setLocale('sv')
+	const localeSwitchCode = `setLocale('sv')  // svelte-locale
 
-// paraglide
-redirectToLanguage('sv')
+redirectToLanguage('sv')  // paraglide
 
-// typesafe-i18n
-setLocale('sv')
+setLocale('sv')  // typesafe-i18n
 
-// svelte-i18n
-locale.set('sv')`;
+locale.set('sv')`;  // svelte-i18n
 
 	const messagesCode = `import { defineMessages } from 'svelte-locale';
 
@@ -368,21 +363,22 @@ definePlurals({
 plural('tickets.count', 1)  // → '1 ticket'
 plural('tickets.count', 5)  // → '5 tickets'`;
 
-	const functionsCode = `import { defineFunctions, createFn } from 'svelte-locale';
+	const functionsCode = `import i18n from 'svelte-locale';
+import { createFn } from 'svelte-locale';
 
 export type AppFunctions = {
   'billing.status': (input: { status: 'paid' | 'pending' | 'overdue'; days?: number }) => string;
 };
 
-defineFunctions({
-  en: {
+i18n.defineFunctions({
+  'en-US': {
     'billing.status': ({ status, days }) => {
       if (status === 'paid') return 'Invoice is paid.';
       if (status === 'overdue') return \`Invoice is overdue by \${days ?? 0} days.\`;
       return 'Invoice is pending.';
     }
   },
-  sv: {
+  'sv-SE': {
     'billing.status': ({ status, days }) => {
       if (status === 'paid') return 'Fakturan är betald.';
       if (status === 'overdue') return \`Fakturan är \${days ?? 0} dagar sen.\`;
@@ -395,18 +391,18 @@ export const fn = createFn<AppFunctions>();`;
 
 	const fnExampleCode = `import { fn } from '$lib/i18n/functions';
 
-fn('billing.status', { status: 'paid' })             // → 'Invoice is paid.'
-fn('billing.status', { status: 'overdue', days: 3 }) // → 'Invoice is overdue by 3 days.'`;
+fn('billing.status', { status: 'paid' })
+fn('billing.status', { status: 'overdue', days: 3 })`;
 
 	const formatExampleCode = `import { formatNumber, formatCurrency, formatDate, formatRelativeTime } from 'svelte-locale';
 
-formatNumber(1234567.89)                        // → '1,234,567.89'
-formatNumber(0.42, { style: 'percent' })        // → '42%'
-formatCurrency(299, 'SEK')                      // → 'SEK 299.00' (en) / '299,00 kr' (sv)
-formatCurrency(9.99, 'USD')                     // → '$9.99'
-formatDate(new Date(), { dateStyle: 'long' })   // → 'July 3, 2026'
-formatRelativeTime(-2, 'day')                   // → '2 days ago'
-formatRelativeTime(1, 'hour')                   // → 'in 1 hour'`;
+formatNumber(1234567.89)
+formatNumber(0.42, { style: 'percent' })
+formatCurrency(299, 'SEK')
+formatCurrency(9.99, 'USD')
+formatDate(new Date(), { dateStyle: 'long' })
+formatRelativeTime(-2, 'day')
+formatRelativeTime(1, 'hour')`;
 
 	const i18nExampleCode = `<script lang="ts">
   import { I18n } from 'svelte-locale/svelte';
@@ -455,7 +451,7 @@ import { richI18n } from 'svelte-locale/vite';
 
 export default defineConfig({
   plugins: [
-    richI18n({ locales: ['en', 'sv'] }),
+    richI18n(),
     sveltekit()
   ]
 });`;
@@ -536,6 +532,8 @@ import '$lib/i18n/functions';`;
 		{ name: 'formatCurrency(value, currency?, options?)', desc: 'Locale-aware currency formatting.' },
 		{ name: 'formatDate(value, options?)', desc: 'Locale-aware date formatting. Accepts Date, ISO string, or timestamp.' },
 		{ name: 'formatRelativeTime(value, unit, options?)', desc: 'Relative time formatting via Intl.RelativeTimeFormat.' },
+		{ name: 'formatDateISO(value)', desc: 'Returns a date-only ISO 8601 string. Locale-independent.' },
+		{ name: 'formatDateTimeISO(value)', desc: 'Returns a full UTC ISO 8601 timestamp. Useful for <time datetime> attributes.' },
 		{ name: 'withLocale(path, locale?)', desc: 'Prepend locale prefix based on routing strategy. Uses current locale if omitted.' },
 		{ name: 'switchLocaleInPath(pathname, locale)', desc: 'Swap the locale prefix in a path.' },
 		{ name: 'getLocaleFromPath(pathname)', desc: 'Extract locale from the first path segment.' },
@@ -550,7 +548,7 @@ import '$lib/i18n/functions';`;
 	const svelteApi = [
 		{ name: '<I18n key fallback? as? class? style?>', desc: 'Renders only the active locale block. All other blocks stripped at compile time by the Vite plugin.' },
 		{ name: '<LocaleLink href locale?>', desc: 'Locale-aware anchor. Prepends correct prefix based on routing strategy. Accepts all <a> attributes.' },
-		{ name: '<LocaleSwitcher class? buttonClass? button?>', desc: 'Renders a button per locale. Active locale has aria-pressed="true". Supports custom button snippet.' },
+		{ name: '<LocaleSwitcher class? style? buttonClass? buttonStyle? button?>', desc: 'Renders a button per locale. Active locale has aria-pressed="true". Supports custom button snippet.' },
 		{ name: '<HreflangLinks pathname origin? xDefault? extraLocales?>', desc: 'Injects <link rel="alternate" hreflang="..."> tags for SEO. Place in root layout <svelte:head>.' },
 	];
 
@@ -602,20 +600,20 @@ import '$lib/i18n/functions';`;
 		</div>
 	</header>
 
-	<AlertDialog bind:open={alphaDialogOpen}>
+	<AlertDialog bind:open={betaDialogOpen}>
 		<AlertDialogContent>
 			<AlertDialogHeader>
 				<AlertDialogTitle class="flex items-center gap-2 text-destructive">
 					<AlertTriangle class="h-5 w-5 text-destructive" />
-					{t('alpha.title')}
+					{t('beta.title')}
 				</AlertDialogTitle>
 				<AlertDialogDescription >
-					{t('alpha.desc')}
+					{t('beta.desc')}
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter>
-				<AlertDialogAction onclick={() => alphaDialogOpen = false}>
-					{t('alpha.acknowledge')}
+				<AlertDialogAction onclick={() => betaDialogOpen = false}>
+					{t('beta.acknowledge')}
 				</AlertDialogAction>
 			</AlertDialogFooter>
 		</AlertDialogContent>
@@ -654,15 +652,11 @@ import '$lib/i18n/functions';`;
 					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/app.html</code> — {t('install.app_html')}</li>
 					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/app.d.ts</code> — {t('install.app_dts')}</li>
 					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/hooks.server.ts</code> — {t('install.hooks')}</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.server.ts</code> — {t('install.layout_server')}</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.ts</code> — {t('install.layout_ts')}</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/routes/+layout.svelte</code> — {t('install.layout_svelte')}</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/messages.ts</code> — {t('install.messages')}</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/plurals.ts</code> — {t('install.plurals')}</li>
-					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n/functions.ts</code> — {t('install.functions')}</li>
+					<li><code class="rounded bg-zinc-200 px-1 py-0.5">src/lib/i18n.ts</code> — {t('install.config')}</li>
 					<li><code class="rounded bg-zinc-200 px-1 py-0.5">vite.config.ts</code> — {t('install.vite')}</li>
 				</ul>
 			</div>
+			<p class="text-sm text-zinc-600">{t('install.manual_note')}</p>
 		</section>
 
 		<section id="compare" class="space-y-4 {highlightedSection === 'compare' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
@@ -715,26 +709,23 @@ import '$lib/i18n/functions';`;
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('t.language_file')}</p>
 				<CodeBlock code={`// src/lib/i18n/messages.ts
-import { defineMessages } from 'svelte-locale';
+import i18n from 'svelte-locale';
 
-defineMessages({
-  en: {
+i18n.defineMessages({
+  'en-US': {
     'common.save': 'Save',
     'common.cancel': 'Cancel',
     'auth.welcome': 'Welcome back, {name}'
   },
-  sv: {
+  'sv-SE': {
     'common.save': 'Spara',
     'common.cancel': 'Avbryt',
     'auth.welcome': 'Välkommen tillbaka, {name}'
   }
 });
 
-// src/routes/+page.svelte
-import { t } from 'svelte-locale';
-
-t('common.save')                         // → 'Save'
-t('auth.welcome', { name: 'Vincent' })   // → 'Welcome back, Vincent'`} lang="ts" />
+i18n.t('common.save')
+i18n.t('auth.welcome', { name: 'Vincent' })`} lang="ts" />
 			</div>
 
 			<div class="mt-4 space-y-2">
@@ -764,22 +755,19 @@ t('auth.welcome', { name: 'Vincent' })   // → 'Welcome back, Vincent'`} lang="
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('plural.language_file')}</p>
 				<CodeBlock code={`// src/lib/i18n/plurals.ts
-import { definePlurals } from 'svelte-locale';
+import i18n from 'svelte-locale';
 
-definePlurals({
-  en: {
+i18n.definePlurals({
+  'en-US': {
     'tickets.count': { one: '{count} ticket', other: '{count} tickets' }
   },
-  sv: {
+  'sv-SE': {
     'tickets.count': { one: '{count} biljett', other: '{count} biljetter' }
   }
 });
 
-// src/routes/+page.svelte
-import { plural } from 'svelte-locale';
-
-plural('tickets.count', 1)  // → '1 ticket'
-plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
+i18n.plural('tickets.count', 1)
+i18n.plural('tickets.count', 5)`} lang="ts" />
 			</div>
 
 			<div class="mt-4 space-y-2">
@@ -828,6 +816,25 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
+		<section id="routing-helpers" class="space-y-4 {highlightedSection === 'routing-helpers' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">Routing Helpers</h2>
+				<p class="text-sm text-zinc-500">Helper functions for working with locale prefixes in URLs.</p>
+			</div>
+			<CodeBlock code={`import { withLocale, switchLocaleInPath, getLocaleFromPath, stripLocalePrefix } from 'svelte-locale';
+
+withLocale('/settings')
+withLocale('/settings', 'sv-SE')
+
+switchLocaleInPath('/en/settings', 'sv-SE')
+
+getLocaleFromPath('/en/settings')
+getLocaleFromPath('/settings')
+
+stripLocalePrefix('/en/settings')
+stripLocalePrefix('/settings')`} lang="ts" />
+		</section>
+
 		<section id="i18n" class="space-y-4 {highlightedSection === 'i18n' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
 				<h2 class="mb-1 text-xl font-semibold">{t('i18n.title')}</h2>
@@ -844,8 +851,17 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 				<h2 class="mb-1 text-xl font-semibold">{t('components.title')}</h2>
 				<p class="text-sm text-zinc-500">{t('components.desc')}</p>
 			</div>
-			<CodeBlock code={localeSwitcherCode} lang="svelte" />
-			<CodeBlock code={localeLinksCode} lang="svelte" />
+			<div class="space-y-4">
+				<div>
+					<p class="mb-2 text-sm font-medium text-zinc-700">LocaleSwitcher</p>
+					<CodeBlock code={localeSwitcherCode} lang="svelte" />
+					<p class="mt-2 text-xs text-zinc-600">Props: class, style, buttonClass, buttonStyle, button (custom snippet)</p>
+				</div>
+				<div>
+					<p class="mb-2 text-sm font-medium text-zinc-700">LocaleLink & HreflangLinks</p>
+					<CodeBlock code={localeLinksCode} lang="svelte" />
+				</div>
+			</div>
 		</section>
 
 		<section id="bcp" class="space-y-4 {highlightedSection === 'bcp' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
@@ -856,7 +872,20 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.regional')}</p>
 				<p class="text-xs text-zinc-600">{t('bcp.regional_desc')}</p>
-				<CodeBlock code={`// vite.config.ts\nrichI18n({ locales: ['en-US', 'en-GB', 'pt-BR', 'zh-CN', 'zh-TW'] })\n\n// src/lib/i18n/messages.ts\ndefineMessages({\n  'en-US': { 'currency.symbol': '$' },\n  'en-GB': { 'currency.symbol': '£' },\n  'pt-BR': { 'greeting': 'Olá' }\n});`} lang="ts" />
+				<CodeBlock code={`import { defineConfig } from 'svelte-locale';
+
+export default defineConfig({
+  locales: ['en-US', 'en-GB', 'pt-BR', 'zh-CN', 'zh-TW'],
+  defaultLocale: 'en-US'
+});
+
+import i18n from 'svelte-locale';
+
+i18n.defineMessages({
+  'en-US': { 'currency.symbol': '$' },
+  'en-GB': { 'currency.symbol': '£' },
+  'pt-BR': { 'greeting': 'Olá' }
+});`} lang="ts" />
 			</div>
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.built_in')}</p>
@@ -930,12 +959,18 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.utilities')}</p>
 				<p class="text-xs text-zinc-600">{t('bcp.utilities_desc')}</p>
-				<CodeBlock code={`import { getBaseLocale, normalizeLocale, getLocaleDir, getLocaleName } from 'svelte-locale';\n\ngetBaseLocale('en-US')      // → 'en'\nnormalizeLocale('pt-br')    // → 'pt-BR'\ngetLocaleDir('ar-SA')       // → 'rtl'\ngetLocaleDir('ar-DZ')       // → 'rtl'  (falls back to 'ar')\ngetLocaleName('pt-BR')      // → 'Português (Brasil)'`} lang="ts" />
+				<CodeBlock code={`import { getBaseLocale, normalizeLocale, getLocaleDir, getLocaleName } from 'svelte-locale';
+
+getBaseLocale('en-US')
+normalizeLocale('pt-br')
+getLocaleDir('ar-SA')
+getLocaleDir('ar-DZ')
+getLocaleName('pt-BR')`} lang="ts" />
 			</div>
 			<div class="mt-4 space-y-2">
 				<p class="text-sm font-medium text-zinc-700">{t('bcp.accept_lang')}</p>
 				<p class="text-xs text-zinc-600">{t('bcp.accept_lang_desc')}</p>
-				<CodeBlock code={`// Accept-Language: pt-BR, pt;q=0.9, en;q=0.8\n// → resolves to pt-BR if configured, then pt, then en\n// Works automatically — no extra configuration needed.`} lang="ts" />
+				<CodeBlock code={`Accept-Language: pt-BR, pt;q=0.9, en;q=0.8`} lang="ts" />
 			</div>
 		</section>
 
@@ -991,35 +1026,43 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">1. {t('manual.step1')}</p>
 				<p class="mb-2 text-xs text-zinc-600">{t('manual.step1_desc')}</p>
-				<CodeBlock code={viteCode} lang="ts" filename="vite.config.ts" />
+				<CodeBlock code={`import { defineConfig } from 'svelte-locale';
+
+export default defineConfig({
+  locales: ['en-US', 'sv-SE'],
+  defaultLocale: 'en-US',
+  fallbackLocale: 'en-US',
+  cookieName: 'locale',
+  routing: {
+    strategy: 'none',
+    prefixDefaultLocale: false
+  },
+  detection: ['url', 'cookie', 'accept-language', 'default']
+});`} lang="ts" filename="src/lib/i18n.ts" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">2. {t('manual.step2')}</p>
 				<p class="mb-2 text-xs text-zinc-600">{t('manual.step2_desc')}</p>
-				<CodeBlock code={appHtmlCode} lang="html" filename="src/app.html" />
+				<CodeBlock code={viteCode} lang="ts" filename="vite.config.ts" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">3. {t('manual.step3')}</p>
 				<p class="mb-2 text-xs text-zinc-600">{t('manual.step3_desc')}</p>
-				<CodeBlock code={appDtsCode} lang="ts" filename="src/app.d.ts" />
+				<CodeBlock code={appHtmlCode} lang="html" filename="src/app.html" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">4. {t('manual.step4')}</p>
 				<p class="mb-2 text-xs text-zinc-600">{t('manual.step4_desc')}</p>
-				<CodeBlock code={hooksCode} lang="ts" filename="src/hooks.server.ts" />
+				<CodeBlock code={appDtsCode} lang="ts" filename="src/app.d.ts" />
 			</div>
 
 			<div>
 				<p class="mb-1 text-sm font-medium text-zinc-700">5. {t('manual.step5')}</p>
 				<p class="mb-2 text-xs text-zinc-600">{t('manual.step5_desc')}</p>
-				<div class="space-y-4">
-					<CodeBlock code={layoutServerCode} lang="ts" filename="+layout.server.ts" route="src/routes/+layout.server.ts" />
-					<CodeBlock code={layoutTsCode} lang="ts" filename="+layout.ts" route="src/routes/+layout.ts" />
-					<CodeBlock code={layoutSvelteCode} lang="svelte" filename="+layout.svelte" route="src/routes/+layout.svelte" />
-				</div>
+				<CodeBlock code={hooksCode} lang="ts" filename="src/hooks.server.ts" />
 			</div>
 		</section>
 
@@ -1052,10 +1095,63 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 			</div>
 		</section>
 
-		<section id="routing" class="space-y-4 {highlightedSection === 'routing' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
+		<section id="server-api" class="space-y-4 {highlightedSection === 'server-api' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
 			<div>
-				<h2 class="mb-1 text-xl font-semibold">{t('routing.title')}</h2>
-				<p class="text-sm text-zinc-500">{t('routing.desc')}</p>
+				<h2 class="mb-1 text-xl font-semibold">Server API</h2>
+				<p class="text-sm text-zinc-500">Server-side functions for SvelteKit hooks and load functions.</p>
+			</div>
+			<CodeBlock code={`import { handleI18n, detectLocale } from 'svelte-locale/server';
+
+// src/hooks.server.ts
+export const handle: Handle = handleI18n();
+
+// Manual detection (for custom handle composition)
+export const handle: Handle = async ({ event, resolve }) => {
+  const locale = detectLocale(event);
+  event.locals.locale = locale;
+  return resolve(event);
+};`} lang="ts" />
+		</section>
+
+		<section id="api-usage" class="space-y-4 {highlightedSection === 'api-usage' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">API Usage: Namespace vs Direct Imports</h2>
+				<p class="text-sm text-zinc-500">You can use the i18n namespace for language data, or import functions directly from svelte-locale.</p>
+			</div>
+			<div class="space-y-4">
+				<div>
+					<p class="mb-2 text-sm font-medium text-zinc-700">Namespace pattern (recommended for language data)</p>
+					<CodeBlock code={`import i18n from 'svelte-locale';
+
+i18n.defineMessages({
+  'en-US': {
+    'common.save': 'Save'
+  },
+  'sv-SE': {
+    'common.save': 'Spara'
+  }
+});
+
+i18n.t('common.save')
+i18n.plural('tickets.count', 5)`} lang="ts" />
+				</div>
+				<div>
+					<p class="mb-2 text-sm font-medium text-zinc-700">Direct imports (for runtime functions)</p>
+					<CodeBlock code={`import { t, plural, getLocale, setLocale } from 'svelte-locale';
+
+t('common.save')
+plural('tickets.count', 5)
+getLocale()
+setLocale('sv-SE')
+formatNumber(1234.56)`} lang="ts" />
+				</div>
+			</div>
+		</section>
+
+		<section id="routing-strategies" class="space-y-4 {highlightedSection === 'routing-strategies' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">Routing Strategies</h2>
+				<p class="text-sm text-zinc-500">Configure how locales appear in URLs via the routing.strategy option.</p>
 			</div>
 			<div class="overflow-hidden rounded-lg border border-zinc-200">
 				<Table>
@@ -1079,6 +1175,34 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 					</TableBody>
 				</Table>
 			</div>
+		</section>
+
+		<section id="locale-registry" class="space-y-4 {highlightedSection === 'locale-registry' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">Built-in Locale Registry</h2>
+				<p class="text-sm text-zinc-500">The library includes a built-in registry of common locales with display names and text direction.</p>
+			</div>
+			<CodeBlock code={`import { getLocaleRegistry, getLocaleName, getLocaleDir, defineLocale } from 'svelte-locale';
+
+const registry = getLocaleRegistry();
+console.log(registry['en-US']);
+
+getLocaleName('en-US')
+getLocaleDir('ar-SA')
+
+defineLocale('xx-XX', {
+  name: 'Custom Locale',
+  dir: 'ltr'
+});`} lang="ts" />
+		</section>
+
+		<section id="vite-plugin" class="space-y-4 {highlightedSection === 'vite-plugin' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
+			<div>
+				<h2 class="mb-1 text-xl font-semibold">Vite Plugin</h2>
+				<p class="text-sm text-zinc-500">The richI18n plugin transforms {'<I18n>'} components into Svelte snippets at compile time.</p>
+			</div>
+			<CodeBlock code={viteCode} lang="ts" filename="vite.config.ts" />
+			<p class="mt-2 text-xs text-zinc-600">The plugin automatically reads locales from your config file. No manual configuration needed.</p>
 		</section>
 
 		<section id="api" class="space-y-4 {highlightedSection === 'api' ? 'ring-2 ring-blue-500 ring-offset-2 rounded-lg p-4 transition-all duration-300' : ''}">
@@ -1147,11 +1271,18 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 					<li><a href="#plural" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.plural')}</a></li>
 					<li><a href="#fn" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.fn')}</a></li>
 					<li><a href="#format" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.format')}</a></li>
+					<li><a href="#routing-helpers" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.routing_helpers')}</a></li>
 					<li><a href="#i18n" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.i18n')}</a></li>
 					<li><a href="#components" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.components')}</a></li>
 					<li><a href="#bcp" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.bcp')}</a></li>
 					<li><a href="#syntax" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.syntax')}</a></li>
 					<li><a href="#manual" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.manual')}</a></li>
+					<li><a href="#config" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.config')}</a></li>
+					<li><a href="#server-api" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.server_api')}</a></li>
+					<li><a href="#api-usage" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.api_usage')}</a></li>
+					<li><a href="#routing-strategies" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.routing_strategies')}</a></li>
+					<li><a href="#locale-registry" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.locale_registry')}</a></li>
+					<li><a href="#vite-plugin" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.vite_plugin')}</a></li>
 					<li><a href="#api" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.api')}</a></li>
 						</ul>
 					</nav>
@@ -1192,11 +1323,18 @@ plural('tickets.count', 5)  // → '5 tickets'`} lang="ts" />
 						<li><a href="#plural" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.plural')}</a></li>
 						<li><a href="#fn" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.fn')}</a></li>
 						<li><a href="#format" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.format')}</a></li>
+						<li><a href="#routing-helpers" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.routing_helpers')}</a></li>
 						<li><a href="#i18n" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.i18n')}</a></li>
 						<li><a href="#components" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.components')}</a></li>
 						<li><a href="#bcp" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.bcp')}</a></li>
 						<li><a href="#syntax" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.syntax')}</a></li>
 						<li><a href="#manual" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.manual')}</a></li>
+						<li><a href="#config" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.config')}</a></li>
+						<li><a href="#server-api" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.server_api')}</a></li>
+						<li><a href="#api-usage" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api_usage')}</a></li>
+						<li><a href="#routing-strategies" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.routing_strategies')}</a></li>
+						<li><a href="#locale-registry" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.locale_registry')}</a></li>
+						<li><a href="#vite-plugin" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.vite_plugin')}</a></li>
 						<li><a href="#api" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api')}</a></li>
 					</ul>
 					</div>
