@@ -1265,25 +1265,25 @@ defineLocale('xx-XX', {
 					<nav>
 				<p class="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">{t('toc.title')}</p>
 				<ul class="space-y-2 text-sm">
-					<li><a href="#install" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.install')}</a></li>
-					<li><a href="#compare" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.compare')}</a></li>
-					<li><a href="#t" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.t')}</a></li>
-					<li><a href="#plural" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.plural')}</a></li>
-					<li><a href="#fn" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.fn')}</a></li>
-					<li><a href="#format" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.format')}</a></li>
-					<li><a href="#routing-helpers" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.routing_helpers')}</a></li>
-					<li><a href="#i18n" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.i18n')}</a></li>
-					<li><a href="#components" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.components')}</a></li>
-					<li><a href="#bcp" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.bcp')}</a></li>
-					<li><a href="#syntax" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.syntax')}</a></li>
-					<li><a href="#manual" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.manual')}</a></li>
-					<li><a href="#config" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.config')}</a></li>
-					<li><a href="#server-api" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.server_api')}</a></li>
-					<li><a href="#api-usage" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.api_usage')}</a></li>
-					<li><a href="#routing-strategies" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.routing_strategies')}</a></li>
-					<li><a href="#locale-registry" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.locale_registry')}</a></li>
-					<li><a href="#vite-plugin" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.vite_plugin')}</a></li>
-					<li><a href="#api" class="text-zinc-600 hover:text-zinc-900 block">{t('toc.api')}</a></li>
+					<li><a href="#install" class="{highlightedSection === 'install' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.install')}</a></li>
+					<li><a href="#compare" class="{highlightedSection === 'compare' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.compare')}</a></li>
+					<li><a href="#t" class="{highlightedSection === 't' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.t')}</a></li>
+					<li><a href="#plural" class="{highlightedSection === 'plural' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.plural')}</a></li>
+					<li><a href="#fn" class="{highlightedSection === 'fn' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.fn')}</a></li>
+					<li><a href="#format" class="{highlightedSection === 'format' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.format')}</a></li>
+					<li><a href="#routing-helpers" class="{highlightedSection === 'routing-helpers' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.routing_helpers')}</a></li>
+					<li><a href="#i18n" class="{highlightedSection === 'i18n' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.i18n')}</a></li>
+					<li><a href="#components" class="{highlightedSection === 'components' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.components')}</a></li>
+					<li><a href="#bcp" class="{highlightedSection === 'bcp' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.bcp')}</a></li>
+					<li><a href="#syntax" class="{highlightedSection === 'syntax' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.syntax')}</a></li>
+					<li><a href="#manual" class="{highlightedSection === 'manual' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.manual')}</a></li>
+					<li><a href="#config" class="{highlightedSection === 'config' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.config')}</a></li>
+					<li><a href="#server-api" class="{highlightedSection === 'server-api' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.server_api')}</a></li>
+					<li><a href="#api-usage" class="{highlightedSection === 'api-usage' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.api_usage')}</a></li>
+					<li><a href="#routing-strategies" class="{highlightedSection === 'routing-strategies' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.routing_strategies')}</a></li>
+					<li><a href="#locale-registry" class="{highlightedSection === 'locale-registry' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.locale_registry')}</a></li>
+					<li><a href="#vite-plugin" class="{highlightedSection === 'vite-plugin' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.vite_plugin')}</a></li>
+					<li><a href="#api" class="{highlightedSection === 'api' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block">{t('toc.api')}</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -1317,25 +1317,25 @@ defineLocale('xx-XX', {
 					<div class="p-6">
 					<p class="mb-4 text-sm font-semibold uppercase tracking-widest text-zinc-500">{t('toc.title')}</p>
 					<ul class="space-y-3 text-sm">
-						<li><a href="#install" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.install')}</a></li>
-						<li><a href="#compare" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.compare')}</a></li>
-						<li><a href="#t" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.t')}</a></li>
-						<li><a href="#plural" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.plural')}</a></li>
-						<li><a href="#fn" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.fn')}</a></li>
-						<li><a href="#format" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.format')}</a></li>
-						<li><a href="#routing-helpers" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.routing_helpers')}</a></li>
-						<li><a href="#i18n" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.i18n')}</a></li>
-						<li><a href="#components" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.components')}</a></li>
-						<li><a href="#bcp" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.bcp')}</a></li>
-						<li><a href="#syntax" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.syntax')}</a></li>
-						<li><a href="#manual" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.manual')}</a></li>
-						<li><a href="#config" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.config')}</a></li>
-						<li><a href="#server-api" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.server_api')}</a></li>
-						<li><a href="#api-usage" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api_usage')}</a></li>
-						<li><a href="#routing-strategies" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.routing_strategies')}</a></li>
-						<li><a href="#locale-registry" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.locale_registry')}</a></li>
-						<li><a href="#vite-plugin" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.vite_plugin')}</a></li>
-						<li><a href="#api" class="text-zinc-600 hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api')}</a></li>
+						<li><a href="#install" class="{highlightedSection === 'install' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.install')}</a></li>
+						<li><a href="#compare" class="{highlightedSection === 'compare' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.compare')}</a></li>
+						<li><a href="#t" class="{highlightedSection === 't' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.t')}</a></li>
+						<li><a href="#plural" class="{highlightedSection === 'plural' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.plural')}</a></li>
+						<li><a href="#fn" class="{highlightedSection === 'fn' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.fn')}</a></li>
+						<li><a href="#format" class="{highlightedSection === 'format' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.format')}</a></li>
+						<li><a href="#routing-helpers" class="{highlightedSection === 'routing-helpers' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.routing_helpers')}</a></li>
+						<li><a href="#i18n" class="{highlightedSection === 'i18n' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.i18n')}</a></li>
+						<li><a href="#components" class="{highlightedSection === 'components' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.components')}</a></li>
+						<li><a href="#bcp" class="{highlightedSection === 'bcp' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.bcp')}</a></li>
+						<li><a href="#syntax" class="{highlightedSection === 'syntax' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.syntax')}</a></li>
+						<li><a href="#manual" class="{highlightedSection === 'manual' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.manual')}</a></li>
+						<li><a href="#config" class="{highlightedSection === 'config' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.config')}</a></li>
+						<li><a href="#server-api" class="{highlightedSection === 'server-api' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.server_api')}</a></li>
+						<li><a href="#api-usage" class="{highlightedSection === 'api-usage' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api_usage')}</a></li>
+						<li><a href="#routing-strategies" class="{highlightedSection === 'routing-strategies' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.routing_strategies')}</a></li>
+						<li><a href="#locale-registry" class="{highlightedSection === 'locale-registry' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.locale_registry')}</a></li>
+						<li><a href="#vite-plugin" class="{highlightedSection === 'vite-plugin' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.vite_plugin')}</a></li>
+						<li><a href="#api" class="{highlightedSection === 'api' ? 'text-zinc-900 font-medium' : 'text-zinc-600'} hover:text-zinc-900 block" onclick={() => tocOpen = false}>{t('toc.api')}</a></li>
 					</ul>
 					</div>
 				</SheetContent>
