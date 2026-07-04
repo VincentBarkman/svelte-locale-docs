@@ -11,6 +11,8 @@
 	import { Sheet, SheetContent, SheetTrigger } from '$lib/components/ui/sheet';
 	import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '$lib/components/ui/command';
 	import { Kbd } from '$lib/components/ui/kbd';
+	import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '$lib/components/ui/alert-dialog';
+	import { AlertTriangle } from '@lucide/svelte';
 	import { Globe, Menu, Search } from '@lucide/svelte';
 	import { setLocale } from 'svelte-locale';
 	import { t } from 'svelte-locale';
@@ -21,6 +23,7 @@
 	let searchOpen = $state(false);
 	let searchValue = $state('');
 	let highlightedSection = $state<string | null>(null);
+	let alphaDialogOpen = $state(true);
 
 	$effect(() => {
 		setLocale(locale);
@@ -598,6 +601,25 @@ import '$lib/i18n/functions';`;
 			</Button>
 		</div>
 	</header>
+
+	<AlertDialog bind:open={alphaDialogOpen}>
+		<AlertDialogContent>
+			<AlertDialogHeader>
+				<AlertDialogTitle class="flex items-center gap-2 text-destructive">
+					<AlertTriangle class="h-5 w-5 text-destructive" />
+					{t('alpha.title')}
+				</AlertDialogTitle>
+				<AlertDialogDescription >
+					{t('alpha.desc')}
+				</AlertDialogDescription>
+			</AlertDialogHeader>
+			<AlertDialogFooter>
+				<AlertDialogAction onclick={() => alphaDialogOpen = false}>
+					{t('alpha.acknowledge')}
+				</AlertDialogAction>
+			</AlertDialogFooter>
+		</AlertDialogContent>
+	</AlertDialog>
 
 	<CommandDialog bind:open={searchOpen}>
 		<CommandInput placeholder="Search documentation..." bind:value={searchValue} />
