@@ -3,7 +3,7 @@ import { defineMessages } from 'svelte-locale';
 defineMessages({
 	en: {
 		'hero.tagline': 'A SvelteKit-native i18n library for Svelte 5. Zero dependencies.',
-		'hero.features': 'i18n.t() · i18n.plural() · i18n.fn() · <I18n> · Intl formatters · BCP 47 support',
+		'hero.features': 'Server-first · Svelte 5 Runes · ISO 8601 · BCP 47 · Zero dependencies',
 		'hero.npm': 'npm package',
 		'hero.github': 'GitHub',
 		'beta.title': 'Beta Warning',
@@ -119,7 +119,7 @@ defineMessages({
 	},
 	sv: {
 		'hero.tagline': 'En SvelteKit-native i18n-bibliotek för Svelte 5. Noll beroenden.',
-		'hero.features': 'i18n.t() · i18n.plural() · i18n.fn() · <I18n> · Intl-formatterare · BCP 47-stöd',
+		'hero.features': 'Server-first · Svelte 5 Runes · ISO 8601 · BCP 47 · Noll beroenden',
 		'hero.npm': 'npm-paket',
 		'hero.github': 'GitHub',
 		'beta.title': 'Beta-varning',
